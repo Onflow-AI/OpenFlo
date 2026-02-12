@@ -1,0 +1,65 @@
+[basic]
+# is_demo = false # Deprecated
+save_file_dir = "../eval_dataset_gemini_flash" # Directory to save the results of the program's operations.
+default_task ="Find pdf of paper \"GPT-4V(ision) is a Generalist Web Agent, if Grounded\" from arXiv" # Default task to perform.
+default_website = "https://www.google.com/" # Default website to start the task.
+
+# Global model configuration
+[model]
+name = "openrouter/google/gemini-3-flash-preview" # Model name to use for inference (including SUS synthesis)
+temperature = 1.0 # Temperature setting for model responses, controlling randomness
+
+# Lightweight model for checklist operations (runs in background, non-blocking)
+# Using a smaller VL model (8B) makes checklist updates much faster
+checklist_model = "openrouter/qwen/qwen3-vl-8b-instruct" # Lightweight vision-language model for checklist generation/updates
+
+# Reasoning model for task planning (runs once at task start)
+# Use GPT-5.1 with online search via OpenRouter
+reasoning_model = "openrouter/anthropic/claude-sonnet-4.5"
+reasoning_temperature = 1.0 # Temperature for reasoning model
+reasoning_enable_thinking_mode = true # Enable advanced reasoning capabilities
+reasoning_enable_online = true
+reasoning_effort = "high" # Options: high, medium, low, minimal, none
+reasoning_verbosity = "high" # Options: high, medium, low, minimal, none
+reasoning_enable_web_search = true # Attach web_search tool for GPT-5 reasoning
+
+# API Keys configuration
+[api_keys]
+# Set your OpenRouter API key here or use OPENROUTER_API_KEY environment variable
+# Priority: environment variables > config file values
+openrouter_api_key = 
+
+[experiment]
+task_file_path = "../data/online_tasks/Online_Mind2Web_sampled_50.json" # Path to the JSON file with tasks (ignored if is_demo is true).
+overwrite = false # Enable to overwrite existing results. Disable to skip tasks already saved in save_file_dir.
+max_continuous_no_op = 4 # Maximum number of consecutive ineffective operations allowed.
+max_op = 30 # Maximum number of operations to attempt.
+highlight = false # If true, highlights elements during processing. Included in screenshots.
+# storage_state="" # Path to a saved cookie file, if any.
+# ranker_path = "../model/deberta-v3-base" # Path to the ranking model. Comment out to disable ranking and treat all elements as candidates.
+# Pretrained model: https://huggingface.co/osunlp/MindAct_CandidateGeneration_deberta-v3-base
+
+
+[agent]
+input_info = ["screenshot"]
+max_auto_op = 50
+max_continuous_no_op = 4
+highlight = false
+
+
+
+
+[playwright]
+headless = true # Set to false to show browser window, true to run in background
+geolocation.longitude=-122.329845 # Longitude for geolocation.
+geolocation.latitude=47.604309 # Latitude for geolocation.
+viewport.width = 1400 # Browser window width.
+viewport.height = 1400 # Browser window height.
+
+[ux]
+enable_synthesis = true
+generate_report = true  # Enable UX report generation
+ux_model = "openrouter/google/gemini-3-flash-preview"  # Use Gemini 2.5 Flash for multi-metric SEQ evaluation
+seq_screenshot_context = true  # Include screenshots in evaluation
+
+# openai/gpt-4o-mini

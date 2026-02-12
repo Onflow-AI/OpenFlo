@@ -1,0 +1,352 @@
+[
+    {
+        "task_id": "3dca7cbe7d086619d837ff9f5312cebc_110325",
+        "confirmed_task": "Can you show me products under the category path 'zara home' -> 'rug', with an additional filter for the color beige?",
+        "website": "https://zara.com/us",
+        "reference_length": 5,
+        "level": "easy"
+    },
+    {
+        "task_id": "20a460a8fe1971b84411c5b1e6ac4186",
+        "confirmed_task": "Show theatre events for Las Vegas and select one.",
+        "website": "https://www.stubhub.com/",
+        "reference_length": 3,
+        "level": "easy"
+    },
+    {
+        "task_id": "5916018d1cad999881018cac1216a692",
+        "confirmed_task": "Find a personal trainer service at 10040 for a 25-year-old client aiming to build muscle.",
+        "website": "https://www.thumbtack.com/",
+        "reference_length": 6,
+        "level": "medium"
+    },
+    {
+        "task_id": "2c8ef01a92c71ba9ef2e59bb17eea2b3_110325",
+        "confirmed_task": "If there are any used Apple Mac Studio that has M4 Max 16-core processor, add the one with the largest absolute discount to my cart; otherwise, add the cheapest one.",
+        "website": "https://www.bhphotovideo.com/",
+        "reference_length": 8,
+        "level": "medium"
+    },
+    {
+        "task_id": "99daaed9a83c266341d28aa40067d376",
+        "confirmed_task": "Find the most popular board game on the 'The Hotness' list that has a rating above 7.5 and is suitable for 2 players.",
+        "website": "https://boardgamegeek.com/",
+        "reference_length": 5,
+        "level": "easy"
+    },
+    {
+        "task_id": "d5c34bf39eb6096ae5d439325cde4d32",
+        "confirmed_task": "Find a DMV center in Richmond.",
+        "website": "https://www.dmv.virginia.gov/",
+        "reference_length": 5,
+        "level": "easy"
+    },
+    {
+        "task_id": "29526b17a32485742b5ab63507e99417",
+        "confirmed_task": "Browse Humira dosage information.",
+        "website": "https://www.drugs.com/",
+        "reference_length": 3,
+        "level": "easy"
+    },
+    {
+        "task_id": "c3307a70bb12ebf56cc9ec926b368f15",
+        "confirmed_task": "Find the interactions between Eulexin and hepatic dysfunction.",
+        "website": "https://www.drugs.com/",
+        "reference_length": 5,
+        "level": "easy"
+    },
+    {
+        "task_id": "c6c9dc6079677cef594cec2fa6b16602",
+        "confirmed_task": "Add the cheapest black sofa with at least three seats, a leather finish, and at least four stars to my cart.",
+        "website": "https://www.ikea.com/",
+        "reference_length": 16,
+        "level": "hard"
+    },
+    {
+        "task_id": "2dd41b1d0e8f389d0683f4a4627abfe6",
+        "confirmed_task": "Show houses for sale in Maryland with a maximum price of $60,000.",
+        "website": "https://www.landwatch.com/",
+        "reference_length": 7,
+        "level": "medium"
+    },
+    {
+        "task_id": "78baf9dbe7c3532f7d7ef4cc22a7f065",
+        "confirmed_task": "Find the most popular digital trends report in the Finance & Insurance industry within the region of China.",
+        "website": "https://www.statista.com/",
+        "reference_length": 8,
+        "level": "medium"
+    },
+    {
+        "task_id": "fcf4952d2a1d80ea505c555c3c3b54e7",
+        "confirmed_task": "Find the cheapest used  8-cylinder bmw made between 2005-2015 and priced from 25,000 to  50,000 dollars with mileage less than 50,000 miles or less.",
+        "website": "https://www.cars.com/",
+        "reference_length": 11,
+        "level": "hard"
+    },
+    {
+        "task_id": "6db4a0e346976f2729ba9afcd3208941",
+        "confirmed_task": "Look up tracking information for shipment #3023858502.",
+        "website": "https://www.fedex.com/en-us/home.html",
+        "reference_length": 2,
+        "level": "easy"
+    },
+    {
+        "task_id": "5dec0e6620849459f29e6465982c597e",
+        "confirmed_task": "Search for 33 to 49inch Qled gaming monitor with a 240hz refresh rate that is within $1000 to $2000.",
+        "website": "https://www.bestbuy.com/",
+        "reference_length": 11,
+        "level": "hard"
+    },
+    {
+        "task_id": "502e864440283214e0180645015f568b_110325",
+        "confirmed_task": "Check permit availability for a group of 4 in Brooks Camp, Katmai National Park for next Saturday.",
+        "website": "https://www.recreation.gov/",
+        "reference_length": 8,
+        "level": "medium"
+    },
+    {
+        "task_id": "c8d7f2aa7eb5dd074c48c9f76f8659ad",
+        "confirmed_task": "Show Teen Driver Safety program information.",
+        "website": "https://www.dmv.virginia.gov/",
+        "reference_length": 2,
+        "level": "easy"
+    },
+    {
+        "task_id": "e24662008c3be5d56f986f232fcec447",
+        "confirmed_task": "Find the stock price for WWE over the last month.",
+        "website": "https://www.google.com/finance/",
+        "reference_length": 4,
+        "level": "easy"
+    },
+    {
+        "task_id": "3621b099326c7aebd2e2dac6be3b52d1",
+        "confirmed_task": "Open the profile page of the leader of the Nvidia Learning and Perception Lab.",
+        "website": "https://www.nvidia.com/",
+        "reference_length": 5,
+        "level": "easy"
+    },
+    {
+        "task_id": "330cd04c773ac498f51afa4665461ec8",
+        "confirmed_task": "Browse couches for sale, sort by cheapest, and search in titles only.",
+        "website": "https://craigslist.org/",
+        "reference_length": 6,
+        "level": "medium"
+    },
+    {
+        "task_id": "c0fa2c0e622971955cabf5bcf7b777e8",
+        "confirmed_task": "Search for rentals in Corning, CA with a maximum price of $1500.",
+        "website": "https://www.apartments.com/",
+        "reference_length": 6,
+        "level": "medium"
+    },
+    {
+        "task_id": "fb7b4f784cfde003e2548fdf4e8d6b4f",
+        "confirmed_task": "Open the page with an overview of the submission of releases on Discogs.",
+        "website": "https://www.discogs.com/",
+        "reference_length": 6,
+        "level": "medium"
+    },
+    {
+        "task_id": "323bd85e3559655d89e5496b951a25e8",
+        "confirmed_task": "Tell me information about what identification I need to bring on my trip on Amtrak.",
+        "website": "https://www.amtrak.com/",
+        "reference_length": 6,
+        "level": "medium"
+    },
+    {
+        "task_id": "fe33894188d20d7469f37a9fd855e7ff_110325",
+        "confirmed_task": "Show me the most popular open-source software on SourceForge that runs on Linux and macOS, belongs to the category of \u201cAgentic AI\u201d, is licensed under MIT, and has a production/stable development status.",
+        "website": "https://sourceforge.net/",
+        "reference_length": 11,
+        "level": "hard"
+    },
+    {
+        "task_id": "8689af4d33ce00bf2cdd8987d3bbfd86",
+        "confirmed_task": "Add the cheapest certified refurbished iPad Air with 256GB of storage in any shade of blue to my bag.",
+        "website": "https://www.apple.com/",
+        "reference_length": 8,
+        "level": "medium"
+    },
+    {
+        "task_id": "ade4c09ad3fdb1607209750924cd232f",
+        "confirmed_task": "Compare available plans for the AeroAPI on Flightaware.",
+        "website": "https://www.flightaware.com/",
+        "reference_length": 4,
+        "level": "easy"
+    },
+    {
+        "task_id": "512fd4deab099b8dc0dcfc0ec48a3c63",
+        "confirmed_task": "Identify the open issue with the most comments in the first trending open-source repository this week.",
+        "website": "https://github.com/",
+        "reference_length": 8,
+        "level": "medium"
+    },
+    {
+        "task_id": "207e933d1bba815bcb58664b5d82c085",
+        "confirmed_task": "Find Ohio City apartments with parking, a fitness center, and an elevator.",
+        "website": "https://www.apartments.com/",
+        "reference_length": 6,
+        "level": "medium"
+    },
+    {
+        "task_id": "a7a73c8fa75441fc76df9746c327bdd6",
+        "confirmed_task": "Estimate the cost of a photographer in 07055 for a 4-hour project.",
+        "website": "https://www.thumbtack.com/",
+        "reference_length": 8,
+        "level": "medium"
+    },
+    {
+        "task_id": "8ae510355d978424f490798f900bfa2c",
+        "confirmed_task": "Show me the shared rooms in any university in Melbourne that has a private bathroom wifi, and gas included in the bills.",
+        "website": "https://www.student.com/",
+        "reference_length": 9,
+        "level": "medium"
+    },
+    {
+        "task_id": "d730f4ff450da1bd60a836163736ef6a_110325",
+        "confirmed_task": "Find the GORE-TEX men's hiking shoe with the highest percentage discount, priced between $100.00 and $199.99, with a rating of 4 stars or higher.",
+        "website": "https://www.backcountry.com/",
+        "reference_length": 11,
+        "level": "medium"
+    },
+    {
+        "task_id": "1223b07536a87e0170ff87cbbebd1d3c",
+        "confirmed_task": "Complete a multiplication quiz on https://www.coolmath4kids.com/, covering multiplication facts for 11-12. The quiz should consist of 10 questions, with unlimited time allowed for each. The goal is to achieve a perfect score of 10 out of 10.",
+        "website": "https://www.coolmath4kids.com/",
+        "reference_length": 24,
+        "level": "hard"
+    },
+    {
+        "task_id": "157f4a79d55e8fa3fd55ba772ba40fbc",
+        "confirmed_task": "Find the most popular blue Lilo & Stitch toys.",
+        "website": "https://www.disney.com/",
+        "reference_length": 9,
+        "level": "medium"
+    },
+    {
+        "task_id": "6ca20f1da01edeb49a7a42c816d8c6fe",
+        "confirmed_task": "Find the Eligibility to get the child benefit and How it works and how to claim",
+        "website": "https://www.gov.uk/",
+        "reference_length": 8,
+        "level": "medium"
+    },
+    {
+        "task_id": "84ef883a37af638c3bcf7561f28ce80a",
+        "confirmed_task": "Find the cheapest used hatchback car listing in Madison which has black interiors with a heated seat option and premium sound system.",
+        "website": "https://www.cars.com/",
+        "reference_length": 12,
+        "level": "hard"
+    },
+    {
+        "task_id": "92a3d4236f167af4afdc08876a902ba6",
+        "confirmed_task": "Find a 2022 Tesla Model 3 on CarMax.",
+        "website": "https://www.carmax.com/",
+        "reference_length": 10,
+        "level": "medium"
+    },
+    {
+        "task_id": "6ebde509dca8f15c0fa1bd74f071e8d6",
+        "confirmed_task": "Search for a job in Miami, Florida, in Human Resources on target.",
+        "website": "https://www.target.com/",
+        "reference_length": 14,
+        "level": "hard"
+    },
+    {
+        "task_id": "11857213ca01510f12813740afd59918_110325",
+        "confirmed_task": "Add the most top-selling Birkenstock's men clogs in brown, size 10-10.5 to my cart.",
+        "website": "https://www.birkenstocks.com/",
+        "reference_length": 12,
+        "level": "medium"
+    },
+    {
+        "task_id": "0b51b4fa0295ae80ccd176ebdad6fff6",
+        "confirmed_task": "Search for a red Toyota Corolla from model years 2018 to 2023 on CarMax.",
+        "website": "https://www.carmax.com/",
+        "reference_length": 13,
+        "level": "hard"
+    },
+    {
+        "task_id": "a6f0434ce6aff5f9b03681241b03ad82",
+        "confirmed_task": "Find the closing stock price for Tesla on March 17, 2023.",
+        "website": "https://finance.yahoo.com/",
+        "reference_length": 3,
+        "level": "easy"
+    },
+    {
+        "task_id": "e4e19e04286f644d747d8c5a79d17fac",
+        "confirmed_task": "Find the Drug Interaction Report for Viagra and alcohol.",
+        "website": "https://www.drugs.com/",
+        "reference_length": 6,
+        "level": "medium"
+    },
+    {
+        "task_id": "367d843c640637745e8fafa741cca13b",
+        "confirmed_task": "Find a condo for rent in Houston, TX, with a monthly rent of no more than 30% of an income of $8000. The condo should have a minimum area of 600 square feet, and the move-in date is the 1st of next month.",
+        "website": "https://www.apartments.com/",
+        "reference_length": 15,
+        "level": "hard"
+    },
+    {
+        "task_id": "39c388cdc468688c8139cc2bb5157c13",
+        "confirmed_task": "Calculate the estimated car loan payment amount for an average credit-rated person for a 15,000-dollar car with a down payment of 2000 dollars and loan tenure of 48 months in zip 65215 and shop for the lowest-priced car.",
+        "website": "https://www.cars.com/",
+        "reference_length": 9,
+        "level": "medium"
+    },
+    {
+        "task_id": "dcd26e662a616d373ddd339747c6ce5b",
+        "confirmed_task": "Take a weight management quiz to find a motivating article for a non-exercising, mostly eating out and can't control portions and cravings, and who has a strong support system, enjoys traveling, loves family time and cooking.",
+        "website": "https://www.healthline.com/",
+        "reference_length": 22,
+        "level": "hard"
+    },
+    {
+        "task_id": "ba01ea557b73f864c35ebba0dd6f3cb2",
+        "confirmed_task": "Find the top-rated hotel in Manhattan, NY, suitable for 4 guests, and identify the fastest public transportation option from the hotel to LGA airport.",
+        "website": "https://www.google.com/maps/",
+        "reference_length": 14,
+        "level": "hard"
+    },
+    {
+        "task_id": "d02d236836924919f35f2438d9ed2374",
+        "confirmed_task": "Browse the top 250 movies and find one movie that is available on AMC+.",
+        "website": "https://www.imdb.com/",
+        "reference_length": 22,
+        "level": "hard"
+    },
+    {
+        "task_id": "7be8cd8dba885cddd9af5320f49bc41b",
+        "confirmed_task": "Find roofing contractors within 5 miles of zip code 10002.",
+        "website": "https://www.bbb.org/",
+        "reference_length": 9,
+        "level": "medium"
+    },
+    {
+        "task_id": "33bd2cdcea4fcc42a09a8a1e4e5841c6_110325",
+        "confirmed_task": "Add a Box Combo to my bag with Diet Coke as the drink, and a Kids Combo with milk as the drink. Select the store closest to ZIP 10001 for pickup tomorrow at 12:00 PM.",
+        "website": "https://raisingcanes.com/",
+        "reference_length": 20,
+        "level": "hard"
+    },
+    {
+        "task_id": "ef289e34a2f59a707cb07e2a6229ff03",
+        "confirmed_task": "Compare the Acura CL 2003 with the ILX 2022.",
+        "website": "https://www.cars.com/",
+        "reference_length": 9,
+        "level": "medium"
+    },
+    {
+        "task_id": "c7c07ec10c668625a21ba64165d719bb",
+        "confirmed_task": "Find the total monthly price for four prepaid unlimited lines without autopay discounts.",
+        "website": "https://www.verizon.com/",
+        "reference_length": 8,
+        "level": "medium"
+    },
+    {
+        "task_id": "5c00e9561eae94789443f405525a5869",
+        "confirmed_task": "Find the recommended dosage for Vivitrol.",
+        "website": "https://www.healthline.com/",
+        "reference_length": 5,
+        "level": "easy"
+    }
+]

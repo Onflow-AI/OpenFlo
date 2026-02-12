@@ -1,0 +1,38 @@
+# This file contains the packages needed for package seeact
+# If you want to run/modify SeeAct from the source code
+
+# Core dependencies
+backoff==2.2.1
+httpx==0.27.2
+python-dotenv==1.0.1
+
+# LLM and AI services
+litellm==1.35.32
+
+# Web automation
+playwright>=1.50.0
+
+# Data processing and utilities
+jsonlines>=3.1.0
+numpy>=1.24.0
+sentence_transformers>=2.2.0
+torch>=2.0.0
+protobuf>=4.21.0
+
+# HTML processing
+BeautifulSoup4>=4.12.0
+lxml==4.9.3
+
+# Configuration and utilities
+toml>=0.10.2
+aioconsole>=0.6.0
+psutil>=5.9.0
+
+# Interactive CLI
+InquirerPy==0.3.4
+
+# Image processing
+Pillow>=10.0.0
+
+# HTTP requests
+requests>=2.31.0

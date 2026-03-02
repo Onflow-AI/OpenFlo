@@ -49,7 +49,7 @@ def encode_image(image_path):
     Encode image to base64 with automatic compression if needed.
     This function now uses the image_utils module to handle large images.
     """
-    from seeact.utils.image import encode_image_with_compression
+    from openflo.utils.image import encode_image_with_compression
     return encode_image_with_compression(image_path)
 
 

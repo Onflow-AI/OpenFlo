@@ -27,7 +27,7 @@ reasoning_enable_web_search = true # Attach web_search tool for GPT-5 reasoning
 [api_keys]
 # Set your OpenRouter API key here or use OPENROUTER_API_KEY environment variable
 # Priority: environment variables > config file values
-openrouter_api_key = 
+openrouter_api_key = "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"# OpenRouter API key for Qwen models
 
 [experiment]
 task_file_path = "../data/online_tasks/Online_Mind2Web_sampled_50.json" # Path to the JSON file with tasks (ignored if is_demo is true).

@@ -5,7 +5,7 @@ import logging
 import datetime
 import tempfile
 from playwright.async_api import Locator
-from seeact.browser.helper import saveconfig
+from openflo.browser.helper import saveconfig
 
 def _compress_text(text: str, max_length: int) -> str:
     """Compress text by truncating and adding ellipsis if needed."""
@@ -304,7 +304,7 @@ def emergency_save(task_id, taken_actions, error_info="Unknown error", logger=No
     """
     try:
         # Create emergency save directory
-        emergency_dir = os.path.join(tempfile.gettempdir(), f"seeact_emergency_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}")
+        emergency_dir = os.path.join(tempfile.gettempdir(), f"openflo_emergency_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}")
         os.makedirs(emergency_dir, exist_ok=True)
         
         # Save minimal result data

@@ -5,8 +5,8 @@ Reasoning utilities for task planning using advanced models.
 import os
 import litellm
 import asyncio
-from seeact.llm.engine import add_llm_io_record
-from seeact.prompts.templates import build_reasoning_prompt, format_reasoning_for_prompt
+from openflo.llm.engine import add_llm_io_record
+from openflo.prompts.templates import build_reasoning_prompt, format_reasoning_for_prompt
 
 
 async def generate_task_reasoning(task_description: str, website: str = None,

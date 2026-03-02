@@ -1,5 +1,4 @@
-# This file contains the packages needed for package seeact
-# If you want to run/modify SeeAct from the source code
+# This file contains the packages needed for OpenFlo
 
 # Core dependencies
 backoff==2.2.1

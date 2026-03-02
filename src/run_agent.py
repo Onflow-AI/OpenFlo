@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-This script uses the SeeActAgent package to perform web automation tasks.
+This script uses the OpenFloAgent package to perform web automation tasks.
 It supports both single task mode and batch task mode.
-Configuration is loaded from TOML files compatible with the original src/seeact.py format.
+Configuration is loaded from TOML files compatible with the original src/openflo.py format.
 """
 
 import argparse
@@ -29,7 +29,7 @@ import sys
 from pathlib import Path
 
 import toml
-from seeact.agent.agent import SeeActAgent
+from openflo.agent.agent import OpenFloAgent
 
 # Setup your API Key here, or pass through environment
 # os.environ["OPENAI_API_KEY"] = "Your API KEY Here"
@@ -60,7 +60,7 @@ def setup_logging():
     # Create separate loggers for run_agent.py specific logging
     run_logger = logging.getLogger('run_agent')
     run_handler = logging.FileHandler(
-        os.path.join(log_dir, f"seeact_run_{timestamp}.log"),
+        os.path.join(log_dir, f"openflo_run_{timestamp}.log"),
         mode='w',
         encoding='utf-8'
     )
@@ -73,7 +73,7 @@ def setup_logging():
     # Error logger for critical issues
     error_logger = logging.getLogger('errors')
     error_handler = logging.FileHandler(
-        os.path.join(log_dir, f"seeact_errors_{timestamp}.log"),
+        os.path.join(log_dir, f"openflo_errors_{timestamp}.log"),
         mode='w',
         encoding='utf-8'
     )
@@ -111,8 +111,8 @@ def setup_logging():
     perf_logger.setLevel(logging.INFO)
     
     print(f"Logging configured. Log files will be saved in '{log_dir}/' directory")
-    print(f"Main log: seeact_run_{timestamp}.log")
-    print(f"Error log: seeact_errors_{timestamp}.log")
+    print(f"Main log: openflo_run_{timestamp}.log")
+    print(f"Error log: openflo_errors_{timestamp}.log")
     print(f"Task log: task_execution_{timestamp}.log")
     print(f"Performance log: performance_{timestamp}.log")
 
@@ -121,7 +121,7 @@ def setup_logging():
 
 
 async def run_single_task(config, task_dict):
-    """Run a single task using SeeActAgent
+    """Run a single task using OpenFloAgent
     
     Returns:
         dict: Task execution result with status and details
@@ -165,13 +165,13 @@ async def run_single_task(config, task_dict):
         if gemini_key and gemini_key not in ["Your Gemini API Key Here", "Your API key here"]:
             os.environ['GEMINI_API_KEY'] = gemini_key
 
-    # Extract configuration for SeeActAgent
-    # Note: save_file_dir should be the base directory, SeeActAgent will create task_id subdirectory
+    # Extract configuration for OpenFloAgent
+    # Note: save_file_dir should be the base directory, OpenFloAgent will create task_id subdirectory
     agent_config = {
-        'task_id': task_dict['task_id'],  # Required by SeeActAgent
+        'task_id': task_dict['task_id'],  # Required by OpenFloAgent
         'default_task': task_dict['confirmed_task'],
         'default_website': task_dict['website'],
-        'save_file_dir': config['basic']['save_file_dir'],  # Let SeeActAgent create task_id subdirectory
+        'save_file_dir': config['basic']['save_file_dir'],  # Let OpenFloAgent create task_id subdirectory
         'max_auto_op': config.get('experiment', {}).get('max_op', 30),
         'max_continuous_no_op': config.get('experiment', {}).get('max_continuous_no_op', config.get('agent', {}).get('max_continuous_no_op', 4)),
         'highlight': config.get('experiment', {}).get('highlight', config.get('agent', {}).get('highlight', False)),
@@ -187,7 +187,7 @@ async def run_single_task(config, task_dict):
     }
     
     # Create agent with configuration
-    agent = SeeActAgent(config=config, **agent_config)
+    agent = OpenFloAgent(config=config, **agent_config)
     
     # Initialize result tracking
     result = {
@@ -266,7 +266,7 @@ async def run_single_task(config, task_dict):
                             
                     await agent.execute(prediction_dict)
 
-                # Remove step timeout to avoid premature failures like seeact_old2.py
+                # Remove step timeout to avoid premature failures
                 await step()
                 
                 # Ultra-conservative intelligent termination check - disabled to allow full LLM capability
@@ -579,7 +579,7 @@ async def run_single_task_with_retry(config, task_dict, max_retries=2):
 async def main():
     """Main function with enhanced error handling and retry logic"""
     parser = argparse.ArgumentParser(
-        description="Run SeeAct web automation tasks using the SeeActAgent package"
+        description="Run OpenFlo web automation tasks using the OpenFloAgent package"
     )
     parser.add_argument(
         "-c", "--config_path", 

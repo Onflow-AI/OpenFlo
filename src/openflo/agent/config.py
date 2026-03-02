@@ -5,7 +5,7 @@ import toml
 def load_agent_config(
     config_path=None,
     config=None,
-    save_file_dir="seeact_agent_files",
+    save_file_dir="openflo_agent_files",
     default_task='Find the pdf of the paper "GPT-4V(ision) is a Generalist Web Agent, if Grounded"',
     default_website="https://www.google.com/",
     input_info=["screenshot"],

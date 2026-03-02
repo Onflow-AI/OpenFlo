@@ -4,20 +4,20 @@
 
 *Developed under [Nexus Labs](https://github.com/UCL-Nexus-Labs)*
 
-> This project is based on [Avenir-Web](https://github.com/Princeton-AI2-Lab/Avenir-Web), which itself builds upon the [SeeAct framework](https://github.com/OSU-NLP-Group/SeeAct) developed by the OSU NLP Group.
+> This project is based on [Avenir-Web](https://github.com/Princeton-AI2-Lab/Avenir-Web) developed by the Princeton AI2 Lab.
 
 OpenFlo enables autonomous web agents to perform tasks on any website using vision-language models. The system combines robust browser automation with intelligent action prediction to execute complex workflows.
 
 ## Repository Layout
 
-- [`src/seeact/`](src/seeact/): core agent implementation (`SeeActAgent`)
-  - [`agent/`](src/seeact/agent/): main agent logic
-    - [`agent.py`](src/seeact/agent/agent.py): central agent class and execution flow
-    - [`config.py`](src/seeact/agent/config.py): configuration loading and validation
-    - [`reporting.py`](src/seeact/agent/reporting.py): result saving and summary generation
-    - [`evaluation.py`](src/seeact/agent/evaluation.py): task success evaluation and termination logic
-    - [`executor.py`](src/seeact/agent/executor.py): action execution logic
-    - [`predictor.py`](src/seeact/agent/predictor.py): LLM interaction and action prediction
+- [`src/openflo/`](src/openflo/): core agent implementation (`OpenFloAgent`)
+  - [`agent/`](src/openflo/agent/): main agent logic
+    - [`agent.py`](src/openflo/agent/agent.py): central agent class and execution flow
+    - [`config.py`](src/openflo/agent/config.py): configuration loading and validation
+    - [`reporting.py`](src/openflo/agent/reporting.py): result saving and summary generation
+    - [`evaluation.py`](src/openflo/agent/evaluation.py): task success evaluation and termination logic
+    - [`executor.py`](src/openflo/agent/executor.py): action execution logic
+    - [`predictor.py`](src/openflo/agent/predictor.py): LLM interaction and action prediction
 - [`src/run_agent.py`](src/run_agent.py): single-process runner (demo + batch)
 - [`src/config/`](src/config/)*.toml: sample configs
 - [`data/`](data/): example data and task files
@@ -34,8 +34,8 @@ From the repository root:
 
 ```bash
 # Create a conda environment
-conda create -n seeact python=3.11
-conda activate seeact
+conda create -n openflo python=3.11
+conda activate openflo
 
 # Install the package in editable mode
 pip install -e src
@@ -108,7 +108,7 @@ Configs are TOML files; see `src/config/auto_mode.toml`.
 Each task writes to `basic.save_file_dir/<task_id>/`:
 
 - `agent.log`: per-task execution log
-- `result.json`: final summary (handled by `src/seeact/agent/reporting.py`)
+- `result.json`: final summary (handled by `src/openflo/agent/reporting.py`)
 - `config.toml`: resolved config snapshot
 - `all_predictions.json`: recorded LLM I/O for the task
 - `screenshots/`: `screen_<step>.png` and sometimes `screen_<step>_labeled.png`
@@ -124,19 +124,12 @@ The runners also write run-level logs to `src/logs/`.
 
 ## Attribution
 
-OpenFlo is built upon [Avenir-Web](https://github.com/w3joe/Avenir-Web), which extends the original [SeeAct framework](https://github.com/OSU-NLP-Group/SeeAct) by the OSU NLP Group.
+OpenFlo is built upon [Avenir-Web](https://github.com/w3joe/Avenir-Web).
 
-If you use this work, please cite the original SeeAct paper:
 
-```bibtex
-@article{zheng2024seeact,
-  title={GPT-4V(ision) is a Generalist Web Agent, if Grounded},
-  author={Zheng, Boyuan and Gou, Boyu and Kil, Jihyung and Sun, Huan and Su, Yu},
-  journal={arXiv preprint arXiv:2401.01614},
-  year={2024}
-}
-```
+
+
 
 ## License
 
-This project maintains the same license as the original SeeAct framework. See the [LICENSE](LICENSE) file for details.
+This project maintains the same license as the original framework. See the [LICENSE](LICENSE) file for details.

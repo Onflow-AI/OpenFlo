@@ -26,8 +26,8 @@ import re
 
 import toml
 from playwright.async_api import Locator
-from seeact.agent.config import load_agent_config
-from seeact.agent.reporting import (
+from openflo.agent.config import load_agent_config
+from openflo.agent.reporting import (
     generate_comprehensive_action_summary, 
     generate_recent_action_summary, 
     generate_action_description, 
@@ -35,7 +35,7 @@ from seeact.agent.reporting import (
     save_results, 
     emergency_save
 )
-from seeact.agent.evaluation import (
+from openflo.agent.evaluation import (
     should_terminate_intelligently, 
     should_terminate_on_failure, 
     verify_task_completion_before_terminate, 
@@ -43,26 +43,26 @@ from seeact.agent.evaluation import (
     review_action_generation
 )
 
-from seeact.prompts.utils import get_index_from_option_name, generate_new_query_prompt, \
+from openflo.prompts.utils import get_index_from_option_name, generate_new_query_prompt, \
     generate_new_referring_prompt, format_options, generate_option_name, analyze_repetitive_patterns, \
     generate_action_journey_summary, llm_summarize_actions, llm_update_history_summary, \
     initialize_prompts
-from seeact.browser.helper import saveconfig, setup_agent_logger, page_on_close_handler, page_on_response_handler, \
+from openflo.browser.helper import saveconfig, setup_agent_logger, page_on_close_handler, page_on_response_handler, \
     page_on_open_handler, page_on_crash_handler, save_action_history, \
     start_agent_browser, stop_agent_browser, start_playwright_tracing, stop_playwright_tracing, \
     save_traces, get_page, set_page
-from seeact.prompts.format import format_choices, postprocess_action_lmm, postprocess_action_lmm_pixel
-from seeact.utils.image import take_screenshot, annotate_current_screenshot, take_full_page_screenshot_with_cropping
-from seeact.llm.engine import engine_factory
-from seeact.llm.engine import LLM_IO_RECORDS, add_llm_io_record
-from seeact.managers.checklist import ChecklistManager
-from seeact.utils.reasoning import generate_task_reasoning, format_reasoning_for_prompt
-from seeact.browser.dom import (
+from openflo.prompts.format import format_choices, postprocess_action_lmm, postprocess_action_lmm_pixel
+from openflo.utils.image import take_screenshot, annotate_current_screenshot, take_full_page_screenshot_with_cropping
+from openflo.llm.engine import engine_factory
+from openflo.llm.engine import LLM_IO_RECORDS, add_llm_io_record
+from openflo.managers.checklist import ChecklistManager
+from openflo.utils.reasoning import generate_task_reasoning, format_reasoning_for_prompt
+from openflo.browser.dom import (
     extract_typeable_elements,
     extract_selectable_elements,
     choose_field_with_llm
 )
-from seeact.browser.recovery import capture_page_state, detect_page_state_change, find_click_target_by_text, \
+from openflo.browser.recovery import capture_page_state, detect_page_state_change, find_click_target_by_text, \
     analyze_previous_action_results, add_action_to_stack, detect_repetitive_actions, \
     manage_action_history, is_action_forbidden, \
     is_page_blocked_or_blank
@@ -70,11 +70,11 @@ from .executor import perform_action, execute
 from .predictor import predict
 
 
-class SeeActAgent:
+class OpenFloAgent:
     def __init__(self,
                  config_path=None,
                  config=None,  # Add config parameter
-                 save_file_dir="seeact_agent_files",
+                 save_file_dir="openflo_agent_files",
                  default_task='Find the pdf of the paper "GPT-4V(ision) is a Generalist Web Agent, if Grounded"',
                  default_website="https://www.google.com/",
                  input_info=["screenshot"],
@@ -349,7 +349,7 @@ class SeeActAgent:
             allowed_domain = urlparse(current_website).hostname or ""
         except Exception:
             allowed_domain = ""
-        from seeact.prompts.templates import build_task_constraints_prompt
+        from openflo.prompts.templates import build_task_constraints_prompt
         constraints_text = build_task_constraints_prompt(
             allowed_domain=allowed_domain,
             disallow_login=True,
@@ -481,7 +481,7 @@ class SeeActAgent:
         return save_action_history(self.main_path, self.taken_actions, self.logger, filename=filename)
 
     async def page_on_navigation_handler(self, frame):
-        # Simplified navigation handler similar to seeact_old2.py
+        # Simplified navigation handler
         return await page_on_navigation_handler(frame)
         
 

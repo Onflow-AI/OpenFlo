@@ -18,13 +18,13 @@ import asyncio
 import random
 import traceback
 import re
-from seeact.browser.dom import (
+from openflo.browser.dom import (
     dom_select_option, get_all_select_elements, decide_form_element,
     extract_typeable_elements, verify_last_typing, clear_active_field,
     looks_like_api_endpoint, choose_field_with_llm, dom_select_by_selector,
     extract_selectable_elements
 )
-from seeact.browser.recovery import find_click_target_by_text
+from openflo.browser.recovery import find_click_target_by_text
 
 async def perform_action(
     agent,

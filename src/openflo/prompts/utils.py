@@ -19,8 +19,8 @@ import os
 import logging
 import litellm
 import asyncio
-from seeact.llm.engine import add_llm_io_record
-from seeact.prompts.templates import build_summary_prompt, build_summary_update_prompt
+from openflo.llm.engine import add_llm_io_record
+from openflo.prompts.templates import build_summary_prompt, build_summary_update_prompt
 
 def analyze_repetitive_patterns(previous_actions):
     """Analyze previous actions for repetitive patterns and provide warnings"""

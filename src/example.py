@@ -1,6 +1,6 @@
 import asyncio
 import os
-from seeact.agent import SeeActAgent
+from openflo.agent.agent import OpenFloAgent
 
 # Setup your API Key here, or pass through environment
 # os.environ["OPENAI_API_KEY"] = "Your API KEY Here"
@@ -9,7 +9,7 @@ from seeact.agent import SeeActAgent
 async def run_agent():
     agent = None
     try:
-        agent = SeeActAgent(model="gpt-5", task_id="example_task")
+        agent = OpenFloAgent(model="gpt-5", task_id="example_task")
         await agent.start()
         while not agent.complete_flag:
             prediction_dict = await agent.predict()

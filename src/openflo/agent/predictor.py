@@ -15,8 +15,8 @@
 
 import os
 import re
-from seeact.prompts.templates import build_system_prompt, parse_tool_call, build_task_constraints_prompt, validate_parsed_action
-from seeact.prompts.utils import llm_summarize_actions, llm_update_history_summary, analyze_repetitive_patterns
+from openflo.prompts.templates import build_system_prompt, parse_tool_call, build_task_constraints_prompt, validate_parsed_action
+from openflo.prompts.utils import llm_summarize_actions, llm_update_history_summary, analyze_repetitive_patterns
 from urllib.parse import urlparse
 
 async def predict(agent):

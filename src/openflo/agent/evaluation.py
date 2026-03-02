@@ -2,9 +2,9 @@
 import re
 import os
 import logging
-from seeact.prompts.utils import generate_action_journey_summary
-from seeact.agent.reporting import generate_comprehensive_action_summary
-from seeact.prompts.templates import (
+from openflo.prompts.utils import generate_action_journey_summary
+from openflo.agent.reporting import generate_comprehensive_action_summary
+from openflo.prompts.templates import (
     build_termination_prompt,
     build_blocking_analysis_prompt,
     build_completion_verification_prompt,

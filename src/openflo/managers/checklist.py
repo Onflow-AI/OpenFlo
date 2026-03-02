@@ -1,8 +1,8 @@
 import json
 import logging
 import re
-from seeact.prompts.templates import build_checklist_prompt, build_checklist_update_prompt
-from seeact.utils.checklist import (
+from openflo.prompts.templates import build_checklist_prompt, build_checklist_update_prompt
+from openflo.utils.checklist import (
     get_checklist_status as _util_get_checklist_status,
     format_checklist_for_prompt as _util_format_checklist_for_prompt
 )

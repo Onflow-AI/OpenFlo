@@ -7,7 +7,7 @@
 
 __pycache__/
 online_results/*
-seeact_package/seeact_agent_files/*
+openflo_package/openflo_agent_files/*
 
 # Evaluation datasets and results
 eval_dataset_*/

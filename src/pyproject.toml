@@ -6,16 +6,14 @@ build-backend = "setuptools.build_meta"
 include-package-data = true
 
 [project]
-name = "seeact"
+name = "openflo"
 version = "0.2.9.0"
-description = "SeeAct is a system for generalist web agents that autonomously carry out tasks on any given website, with a focus on large multimodal models (LMMs) such as GPT-4V(ision). It consists of two main components: (1) A robust codebase that supports running web agents on live websites, and (2) an innovative framework that utilizes LMMs as generalist web agents."
+description = "OpenFlo is an open-source web automation framework powered by large multimodal models."
 authors = [
-    {name = "Boyu Gou", email = "gou.43@osu.edu"},
-    {name = "Boyuan Zheng", email = "zheng.2372@osu.edu"},
-    {name = "Zheng Du", email = "du.913@osu.edu"}
+{name = "UCL Nexus Labs"}
 ]
 license = {file="LICENSE"}
-readme = "https://github.com/OSU-NLP-Group/SeeAct/blob/main/README.md"
+readme = "README.md"
 requires-python = ">=3.9"
 
 dependencies = [
@@ -26,8 +24,3 @@ dependencies = [
     "litellm==1.35.32",
     "python-dotenv"
 ]
-
-[project.urls]
-homepage = "https://osu-nlp-group.github.io/SeeAct/"
-repository = "https://github.com/OSU-NLP-Group/SeeAct"
-documentation = "https://github.com/OSU-NLP-Group/SeeAct"

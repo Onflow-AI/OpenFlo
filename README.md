@@ -44,13 +44,14 @@ pip install -e src
 playwright install
 ```
 
-Set an API key:
+Set your API key in the `.env` file at the project root:
 
 ```bash
-export OPENROUTER_API_KEY="your-key"
+cp .env.example .env
+# then edit .env and fill in your key
 ```
 
-You can also put keys in `src/config/*.toml` under `[api_keys]`. Environment variables take precedence.
+Environment variables take precedence over anything in `[api_keys]` inside the config.
 
 ## Running
 
@@ -98,8 +99,8 @@ Configs are TOML files; see `src/config/auto_mode.toml`.
   - `temperature`, `rate_limit`
   - optional: `reasoning_model`, `checklist_model`, `completion_eval_model`
 - `[api_keys]`
-  - `openrouter_api_key` (or set `OPENROUTER_API_KEY`)
-  - optional: `gemini_api_key` (or set `GEMINI_API_KEY`)
+  - keys are loaded from `.env` (`OPENROUTER_API_KEY`)
+  - individual keys can be uncommented in the toml to override
 - `[playwright]`
   - `headless`, `viewport`, `tracing`, `save_video`, `locale`, `geolocation`
 
@@ -117,7 +118,7 @@ The runners also write run-level logs to `src/logs/`.
 
 ## Troubleshooting
 
-- Missing API key: set `OPENROUTER_API_KEY` (preferred) or configure `[api_keys]`
+- Missing API key: fill in `OPENROUTER_API_KEY` in `.env` (copy from `.env.example`)
 - Playwright browser not found: run `python -m playwright install chromium`
 - Want to watch the browser: set `playwright.headless = false`
 - Config paths look wrong: run from `src/` or pass an absolute `-c` config path

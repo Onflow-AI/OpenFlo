@@ -21,13 +21,24 @@ import backoff
 from dotenv import load_dotenv
 import litellm
 
+# Suppress LiteLLM verbose logging
+litellm.set_verbose = False
+litellm.suppress_debug_info = True
+
+# Suppress LiteLLM logger output
+logging.getLogger("LiteLLM").setLevel(logging.WARNING)
+logging.getLogger("LiteLLM Router").setLevel(logging.WARNING)
+logging.getLogger("LiteLLM Proxy").setLevel(logging.WARNING)
+
 EMPTY_API_KEY = "Your API KEY Here"
 
 LLM_IO_RECORDS = []
 
+
 def add_llm_io_record(record):
     try:
         import datetime
+
         r = dict(record)
         r.setdefault("timestamp", datetime.datetime.now().isoformat())
         LLM_IO_RECORDS.append(r)
@@ -38,8 +49,8 @@ def add_llm_io_record(record):
 def load_openrouter_api_key():
     load_dotenv()
     assert (
-            os.getenv("OPENROUTER_API_KEY") is not None and
-            os.getenv("OPENROUTER_API_KEY") != EMPTY_API_KEY
+        os.getenv("OPENROUTER_API_KEY") is not None
+        and os.getenv("OPENROUTER_API_KEY") != EMPTY_API_KEY
     ), "must pass on the api_key or set OPENROUTER_API_KEY in the environment"
     return os.getenv("OPENROUTER_API_KEY")
 
@@ -50,6 +61,7 @@ def encode_image(image_path):
     This function now uses the image_utils module to handle large images.
     """
     from openflo.utils.image import encode_image_with_compression
+
     return encode_image_with_compression(image_path)
 
 
@@ -60,29 +72,29 @@ def engine_factory(api_key=None, model=None, **kwargs):
     """
     if model is None:
         model = "openrouter/qwen/qwen-2.5-72b-instruct"
-    
+
     # Ensure API key is set
     if api_key and api_key != EMPTY_API_KEY:
         os.environ["OPENROUTER_API_KEY"] = api_key
     else:
         load_openrouter_api_key()
-    
+
     # Ensure openrouter/ prefix is present for LiteLLM
     if not model.startswith("openrouter/"):
         model = f"openrouter/{model}"
-    
+
     # Pass model name to RouterEngine (format: openrouter/<provider>/<model>)
     return RouterEngine(model=model, **kwargs)
-    
+
 
 class Engine:
     def __init__(
-            self,
-            stop=["\n\n"],
-            rate_limit=-1,
-            model=None,
-            temperature=0,
-            **kwargs,
+        self,
+        stop=["\n\n"],
+        rate_limit=-1,
+        model=None,
+        temperature=0,
+        **kwargs,
     ) -> None:
         """
             Base class to init an engine
@@ -102,7 +114,7 @@ class Engine:
         self.next_avil_time = [0] * len(self.time_slots)
         self.current_key_idx = 0
         self.request_timeout_s = kwargs.get("request_timeout_s", 120)
-        print(f"Initializing model {self.model}")        
+        print(f"Initializing model {self.model}")
 
     def tokenize(self, input):
         return self.tokenizer(input)
@@ -126,69 +138,165 @@ class RouterEngine(Engine):
         max_tries=3,
         max_time=30,
     )
-    async def generate(self, prompt: list = None, max_new_tokens=4096, temperature=None, model=None, image_path=None,
-                 ouput_0=None, turn_number=0, image_paths=None, **kwargs):
+    async def generate(
+        self,
+        prompt: list = None,
+        max_new_tokens=4096,
+        temperature=None,
+        model=None,
+        image_path=None,
+        ouput_0=None,
+        turn_number=0,
+        image_paths=None,
+        **kwargs,
+    ):
         self.current_key_idx = (self.current_key_idx + 1) % len(self.time_slots)
         start_time = time.time()
         if (
-                self.request_interval > 0
-                and start_time < self.next_avil_time[self.current_key_idx]
+            self.request_interval > 0
+            and start_time < self.next_avil_time[self.current_key_idx]
         ):
             await asyncio.sleep(self.next_avil_time[self.current_key_idx] - start_time)
         prompt0, prompt1, prompt2 = prompt
 
         try:
-            if image_paths is not None and isinstance(image_paths, (list, tuple)) and len(image_paths) > 0:
+            if (
+                image_paths is not None
+                and isinstance(image_paths, (list, tuple))
+                and len(image_paths) > 0
+            ):
                 image_contents = []
                 for p in image_paths:
                     try:
                         b64 = encode_image(p)
-                        image_contents.append({"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}", "detail": "high"}})
+                        image_contents.append(
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": f"data:image/jpeg;base64,{b64}",
+                                    "detail": "high",
+                                },
+                            }
+                        )
                     except Exception:
                         continue
                 if turn_number == 0:
                     prompt_input = [
-                        {"role": "system", "content": [{"type": "text", "text": prompt0}]},
-                        {"role": "user", "content": [{"type": "text", "text": prompt1}] + image_contents},
+                        {
+                            "role": "system",
+                            "content": [{"type": "text", "text": prompt0}],
+                        },
+                        {
+                            "role": "user",
+                            "content": [{"type": "text", "text": prompt1}]
+                            + image_contents,
+                        },
                     ]
                 elif turn_number == 1:
                     prompt_input = [
-                        {"role": "system", "content": [{"type": "text", "text": prompt0}]},
-                        {"role": "user", "content": [{"type": "text", "text": prompt1}] + image_contents},
-                        {"role": "assistant", "content": [{"type": "text", "text": f"\n\n{ouput_0}"}]},
-                        {"role": "user", "content": [{"type": "text", "text": prompt2}]}, 
+                        {
+                            "role": "system",
+                            "content": [{"type": "text", "text": prompt0}],
+                        },
+                        {
+                            "role": "user",
+                            "content": [{"type": "text", "text": prompt1}]
+                            + image_contents,
+                        },
+                        {
+                            "role": "assistant",
+                            "content": [{"type": "text", "text": f"\n\n{ouput_0}"}],
+                        },
+                        {
+                            "role": "user",
+                            "content": [{"type": "text", "text": prompt2}],
+                        },
                     ]
             elif image_path is not None:
                 base64_image = encode_image(image_path)
                 if turn_number == 0:
                     prompt_input = [
-                        {"role": "system", "content": [{"type": "text", "text": prompt0}]},
-                        {"role": "user", "content": [{"type": "text", "text": prompt1}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}", "detail": "high"}}]},
+                        {
+                            "role": "system",
+                            "content": [{"type": "text", "text": prompt0}],
+                        },
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": prompt1},
+                                {
+                                    "type": "image_url",
+                                    "image_url": {
+                                        "url": f"data:image/jpeg;base64,{base64_image}",
+                                        "detail": "high",
+                                    },
+                                },
+                            ],
+                        },
                     ]
                 elif turn_number == 1:
                     prompt_input = [
-                        {"role": "system", "content": [{"type": "text", "text": prompt0}]},
-                        {"role": "user", "content": [{"type": "text", "text": prompt1}, {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}", "detail": "high"}}]},
-                        {"role": "assistant", "content": [{"type": "text", "text": f"\n\n{ouput_0}"}]},
-                        {"role": "user", "content": [{"type": "text", "text": prompt2}]}, 
+                        {
+                            "role": "system",
+                            "content": [{"type": "text", "text": prompt0}],
+                        },
+                        {
+                            "role": "user",
+                            "content": [
+                                {"type": "text", "text": prompt1},
+                                {
+                                    "type": "image_url",
+                                    "image_url": {
+                                        "url": f"data:image/jpeg;base64,{base64_image}",
+                                        "detail": "high",
+                                    },
+                                },
+                            ],
+                        },
+                        {
+                            "role": "assistant",
+                            "content": [{"type": "text", "text": f"\n\n{ouput_0}"}],
+                        },
+                        {
+                            "role": "user",
+                            "content": [{"type": "text", "text": prompt2}],
+                        },
                     ]
             else:
                 # Handle case when no image is provided
                 if turn_number == 0:
                     prompt_input = [
-                        {"role": "system", "content": [{"type": "text", "text": prompt0}]},
-                        {"role": "user", "content": [{"type": "text", "text": prompt1}]},
+                        {
+                            "role": "system",
+                            "content": [{"type": "text", "text": prompt0}],
+                        },
+                        {
+                            "role": "user",
+                            "content": [{"type": "text", "text": prompt1}],
+                        },
                     ]
                 elif turn_number == 1:
                     prompt_input = [
-                        {"role": "system", "content": [{"type": "text", "text": prompt0}]},
-                        {"role": "user", "content": [{"type": "text", "text": prompt1}]},
-                        {"role": "assistant", "content": [{"type": "text", "text": f"\n\n{ouput_0}"}]},
-                        {"role": "user", "content": [{"type": "text", "text": prompt2}]}, 
+                        {
+                            "role": "system",
+                            "content": [{"type": "text", "text": prompt0}],
+                        },
+                        {
+                            "role": "user",
+                            "content": [{"type": "text", "text": prompt1}],
+                        },
+                        {
+                            "role": "assistant",
+                            "content": [{"type": "text", "text": f"\n\n{ouput_0}"}],
+                        },
+                        {
+                            "role": "user",
+                            "content": [{"type": "text", "text": prompt2}],
+                        },
                     ]
-            
+
             current_model = model if model else self.model
-            
+
             # Use OpenRouter; LiteLLM recognizes it from the "openrouter/" prefix in the model name
             try:
                 response = await asyncio.wait_for(
@@ -204,29 +312,39 @@ class RouterEngine(Engine):
                 )
             except asyncio.TimeoutError:
                 elapsed = time.time() - start_time
-                print(f"Timeout waiting for LLM response after {elapsed:.2f}s (model={current_model}, turn={turn_number})")
+                print(
+                    f"Timeout waiting for LLM response after {elapsed:.2f}s (model={current_model}, turn={turn_number})"
+                )
                 raise
             finally:
                 elapsed = time.time() - start_time
                 if elapsed > 60:
-                    print(f"Slow LLM response: {elapsed:.2f}s (model={current_model}, turn={turn_number})")
+                    print(
+                        f"Slow LLM response: {elapsed:.2f}s (model={current_model}, turn={turn_number})"
+                    )
                 else:
-                    print(f"LLM response time: {elapsed:.2f}s (model={current_model}, turn={turn_number})")
-            output_text = [choice["message"]["content"] for choice in response.choices][0]
+                    print(
+                        f"LLM response time: {elapsed:.2f}s (model={current_model}, turn={turn_number})"
+                    )
+            output_text = [choice["message"]["content"] for choice in response.choices][
+                0
+            ]
             try:
-                add_llm_io_record({
-                    "model": current_model,
-                    "turn_number": turn_number,
-                    "messages": prompt_input,
-                    "image_path": image_path,
-                    "image_paths": image_paths,
-                    "output": output_text,
-                    "task_id": getattr(self, "task_id", None)
-                })
+                add_llm_io_record(
+                    {
+                        "model": current_model,
+                        "turn_number": turn_number,
+                        "messages": prompt_input,
+                        "image_path": image_path,
+                        "image_paths": image_paths,
+                        "output": output_text,
+                        "task_id": getattr(self, "task_id", None),
+                    }
+                )
             except Exception:
                 pass
             return output_text
-            
+
         except Exception as e:
             print(f"Error in OpenRouter API call: {str(e)}")
             # Log the error but let backoff handle retries

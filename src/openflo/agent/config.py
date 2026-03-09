@@ -2,6 +2,7 @@
 import os
 import toml
 
+
 def load_agent_config(
     config_path=None,
     config=None,
@@ -26,7 +27,11 @@ def load_agent_config(
     tracing=False,
     trace={"screenshots": True, "snapshots": True, "sources": True},
     model="openrouter/qwen/qwen-2.5-72b-instruct",
-    temperature=1.0
+    temperature=1.0,
+    # UX Synthesis configuration
+    enable_ux_synthesis=False,
+    ux_model=None,
+    seq_screenshot_context=True,
 ):
     """
     Load and merge configuration from file, dict, or defaults.
@@ -36,7 +41,7 @@ def load_agent_config(
             # If config dictionary is passed directly, use it
             pass
         elif config_path is not None:
-            with open(config_path, 'r') as config_file:
+            with open(config_path, "r") as config_file:
                 print(f"Configuration File Loaded - {config_path}")
                 config = toml.load(config_file)
         else:
@@ -52,32 +57,45 @@ def load_agent_config(
                     "input_info": input_info,
                     "max_auto_op": max_auto_op,
                     "max_continuous_no_op": max_continuous_no_op,
-                    "highlight": highlight
+                    "highlight": highlight,
                 },
-                "model": {
-                    "name": model,
-                    "temperature": temperature
+                "model": {"name": model, "temperature": temperature},
+            }
+
+        # Update with runtime overrides
+        config.update(
+            {
+                "browser": {
+                    "headless": headless,
+                    "args": args,
+                    "browser_app": browser_app,
+                    "persistant": persistant,
+                    "persistant_user_path": persistant_user_path,
+                    "save_video": save_video,
+                    "viewport": viewport,
+                    "tracing": tracing,
+                    "trace": trace,
+                    # Simple anti-detection settings
+                    "stealth_mode": stealth_mode,
+                    "user_agent": user_agent,
                 }
             }
-        
-        # Update with runtime overrides
-        config.update({
-            "browser": {
-                "headless": headless,
-                "args": args,
-                "browser_app": browser_app,
-                "persistant": persistant,
-                "persistant_user_path": persistant_user_path,
-                "save_video": save_video,
-                "viewport": viewport,
-                "tracing": tracing,
-                "trace": trace,
-                # Simple anti-detection settings
-                "stealth_mode": stealth_mode,
-                "user_agent": user_agent
-            }
-        })
-        
+        )
+
+        # UX Synthesis configuration
+        # Can be configured via TOML [ux] section or runtime parameters
+        ux_config = config.get("ux", {})
+        config["ux"] = {
+            "enable_synthesis": ux_config.get("enable_synthesis", enable_ux_synthesis),
+            "generate_report": ux_config.get(
+                "generate_report", True
+            ),  # Enable report generation by default
+            "ux_model": ux_config.get("ux_model", ux_model),  # None = use main model
+            "seq_screenshot_context": ux_config.get(
+                "seq_screenshot_context", seq_screenshot_context
+            ),
+        }
+
         return config
 
     except FileNotFoundError:

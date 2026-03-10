@@ -23,7 +23,7 @@ import traceback
 from datetime import datetime
 import sys
 import re
-
+from openflo.agent.ui_analysis import run_ui_analysis
 import toml
 from playwright.async_api import Locator
 from openflo.agent.config import load_agent_config
@@ -652,7 +652,7 @@ class OpenFloAgent:
         final_result_response = "Unknown error occurred during task execution"
         
         try:
-            # Convert enhanced actions to a more readable format for final output
+            # Convert enhanceed actions to a more readable format for final output
             for action in self.taken_actions:
                 if isinstance(action, dict):
                     combined_desc = action.get('action_description', '')
@@ -670,7 +670,8 @@ class OpenFloAgent:
                         "description": combined_desc,
                         "coordinates": action.get('coordinates'),
                         "element_center": action.get('element_center'),
-                        "element_box": action.get('element_box')
+                        "element_box": action.get('element_box'),
+                        "ui_analysis": action.get("ui_analysis")
                     })
                 else:
                     action_history_for_output.append(str(action))
@@ -699,7 +700,41 @@ class OpenFloAgent:
             "action_history": action_history_for_output,
             "exit_by": "Task completed"
         }
+        # Post-task UI analysis over all screenshots
+        ui_analysis_results = []
+        screenshots_dir = os.path.join(self.main_path, "screenshots")
 
+        if os.path.isdir(screenshots_dir):
+            for filename in sorted(os.listdir(screenshots_dir)):
+                if not filename.startswith("screen_"):
+                    continue
+                if not filename.endswith(".png"):
+                    continue
+                if "_labeled" in filename:
+                    continue
+
+                try:
+                    step = int(filename.split("_")[1].split(".")[0])
+                except Exception:
+                    continue
+
+                screen_path = os.path.join(screenshots_dir, filename)
+
+                try:
+                    analysis = await run_ui_analysis(
+                        self,
+                        frame=step,
+                        image_paths=[screen_path],
+                        image_size=(1400, 1400),
+                    )
+                    if analysis is not None:
+                        analysis["step"] = step
+                        analysis["image_path"] = os.path.join("screenshots", filename)
+                        ui_analysis_results.append(analysis)
+                except Exception as ui_error:
+                    self.logger.warning(f"Post-task UI analysis failed for {filename}: {ui_error}")
+
+        final_json["ui_analysis"] = ui_analysis_results
         # Delegate saving to reporting module
         save_results(
             main_path=self.main_path,

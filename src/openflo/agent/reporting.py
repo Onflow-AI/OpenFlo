@@ -451,7 +451,16 @@ def save_results(main_path, task_id, final_json, taken_actions, config, logger, 
         except Exception as fallback_e:
             if logger:
                 logger.error(f"Failed to save minimal result.json: {fallback_e}")
-
+    # Save ui_analysis.json
+    try:
+        if "ui_analysis" in final_json:
+            with open(os.path.join(main_path, 'ui_analysis.json'), 'w', encoding='utf-8') as f:
+                json.dump(final_json["ui_analysis"], f, indent=4)
+            if logger:
+                logger.info("Successfully saved ui_analysis.json")
+    except Exception as e:
+        if logger:
+            logger.error(f"Failed to save ui_analysis.json: {e}")
     # Save config
     try:
         saveconfig(config, os.path.join(main_path, 'config.toml'))

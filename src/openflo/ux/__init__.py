@@ -11,5 +11,8 @@ This package provides tools for evaluating user experience through:
 from .seq_scorer import SEQScorer
 from .sus_calculator import SUSCalculator
 from .report_generator import ReportGenerator
+from .dom_hasher import hash_dom_state
+from .trajectory_logger import TrajectoryLogger
+from .metrics_evaluator import UXMetricsEvaluator
 
-__all__ = ['SEQScorer', 'SUSCalculator', 'ReportGenerator']
+__all__ = ['SEQScorer', 'SUSCalculator', 'ReportGenerator', 'hash_dom_state', 'TrajectoryLogger', 'UXMetricsEvaluator']

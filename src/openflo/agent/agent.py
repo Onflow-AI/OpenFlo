@@ -409,6 +409,20 @@ class OpenFloAgent:
                 self.ux_manager = None
                 self.ux_synthesis_enabled = False
 
+        # Initialize quantitative UX metrics tracking (trajectory-based, no LLM needed)
+        self.trajectory_logger = None
+        self.metrics_evaluator = None
+        self._last_state_hash = None
+        if self.ux_synthesis_enabled:
+            try:
+                from openflo.ux.trajectory_logger import TrajectoryLogger
+                from openflo.ux.metrics_evaluator import UXMetricsEvaluator
+                self.trajectory_logger = TrajectoryLogger(logger=self.logger)
+                self.metrics_evaluator = UXMetricsEvaluator(logger=self.logger)
+                self.logger.info("UX Metrics Tracking initialized (trajectory + quantitative metrics)")
+            except Exception as e:
+                self.logger.warning(f"Failed to initialize UX Metrics Tracking: {e}")
+
         # Remove dedicated GUI grounding model; main model handles grounding.
         self.taken_actions = []
         self.action_history = []  # Track action history for failure analysis
@@ -648,6 +662,46 @@ class OpenFloAgent:
         except Exception as e:
             self.logger.warning(f"SEQ evaluation failed: {e}")
             return None
+
+    async def _log_trajectory_transition(self, action_data: dict):
+        """
+        Log a DOM state transition for quantitative UX metric calculation.
+
+        Captures the DOM state hash before and after each action, forming a
+        trajectory log of (timestamp, state_before, action_type, state_after).
+        The "before" state is carried forward from the previous action's "after"
+        state — on the first call it is computed fresh from the current page.
+
+        Args:
+            action_data: Enhanced action record from taken_actions
+        """
+        if not self.trajectory_logger:
+            return
+
+        try:
+            from openflo.ux.dom_hasher import hash_dom_state
+
+            # Compute the current (post-action) state hash
+            state_after = await hash_dom_state(self.page)
+
+            # On first call, compute the "before" state fresh (we missed the pre-action
+            # snapshot, so use the same hash — first transition state_before == state_after)
+            state_before = self._last_state_hash if self._last_state_hash is not None else state_after
+
+            action_type = action_data.get("predicted_action") or action_data.get("action", "UNKNOWN")
+
+            self.trajectory_logger.log_transition(
+                timestamp=datetime.now().isoformat(),
+                state_before=state_before,
+                action_type=str(action_type).upper(),
+                state_after=state_after,
+            )
+
+            # Carry this state forward as the "before" for the next transition
+            self._last_state_hash = state_after
+
+        except Exception as e:
+            self.logger.warning(f"Trajectory logging failed: {e}")
 
     def _initialize_prompts(self):
         return initialize_prompts()
@@ -946,6 +1000,26 @@ class OpenFloAgent:
             self.logger.info(
                 "UX Synthesis enabled but report generation disabled (generate_report=false in config)"
             )
+
+        # Generate quantitative UX metrics report (trajectory-based)
+        if self.trajectory_logger and self.metrics_evaluator:
+            try:
+                reference_steps = self.config.get("ux", {}).get("reference_steps", None)
+                metrics = self.metrics_evaluator.evaluate(
+                    transitions=self.trajectory_logger.get_transitions(),
+                    reference_steps=reference_steps,
+                )
+                self.trajectory_logger.save(self.main_path)
+                self.metrics_evaluator.save(metrics, self.main_path)
+                eff = metrics["trajectory_efficiency"]
+                eff_str = f"{eff:.3f}" if eff is not None else "N/A (no reference)"
+                self.logger.info(
+                    f"UX Metrics — Efficiency: {eff_str}, "
+                    f"Revisitation Rate: {metrics['state_revisitation_rate']:.3f}, "
+                    f"Oscillations: {metrics['oscillation_count']}"
+                )
+            except Exception as e:
+                self.logger.error(f"Step count trajectory report generation failed: {e}")
 
     def _emergency_save(self, error_info="Unknown error"):
         """

@@ -1973,6 +1973,9 @@ async def execute(agent, prediction_dict):
         # Evaluate SEQ score for this action (if UX synthesis is enabled)
         await agent._evaluate_action_seq(enhanced_action)
 
+        # Log trajectory transition for quantitative UX metrics
+        await agent._log_trajectory_transition(enhanced_action)
+
         agent.logger.info("=== ACTION EXECUTION COMPLETE ===")
         if pred_action != "NONE":
             agent.valid_op += 1
@@ -2043,6 +2046,9 @@ async def execute(agent, prediction_dict):
 
         # Evaluate SEQ score for this action (if UX synthesis is enabled)
         await agent._evaluate_action_seq(enhanced_action)
+
+        # Log trajectory transition for quantitative UX metrics
+        await agent._log_trajectory_transition(enhanced_action)
 
         traceback_info = traceback.format_exc()
         error_message = f"Error executing action {pred_action}: {str(e)}"

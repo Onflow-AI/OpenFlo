@@ -189,6 +189,12 @@ async def run_single_task(config, task_dict):
         'create_timestamp_dir': False
     }
     
+    # Inject reference_length from benchmark data as reference_steps for UX metrics.
+    # reference_length is the number of steps in the human-annotated reference
+    # trajectory, used as a baseline for trajectory efficiency calculation.
+    if 'reference_length' in task_dict:
+        config.setdefault('ux', {})['reference_steps'] = task_dict['reference_length']
+
     # Create agent with configuration
     agent = OpenFloAgent(config=config, **agent_config)
     

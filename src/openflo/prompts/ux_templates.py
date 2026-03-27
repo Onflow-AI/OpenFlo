@@ -17,7 +17,8 @@ def build_seq_evaluation_prompt(
     page_context: dict,
     action_index: int,
     total_actions: int,
-    custom_prompt: str = None
+    custom_prompt: str = None,
+    persona=None,
 ) -> str:
     """
     Build prompt for SEQ evaluation of a single action.
@@ -191,13 +192,36 @@ Example: Cookie banner with small "X" button
 - Confidence: 6 (confident it will close, just hard to click)
 """
 
+    # Build optional persona block
+    persona_section = ""
+    if persona:
+        friction_types = ", ".join(persona.common_friction_types) if persona.common_friction_types else "none specified"
+        persona_section = f"""
+## PERSONA CONTEXT
+You are evaluating this action from the perspective of the following user. Embody their characteristics when scoring — consider how THEY would experience this step, not a generic neutral observer.
+
+**{persona.display_name}** ({persona.age_range})
+> {persona.description}
+
+| Attribute | Value |
+|-----------|-------|
+| Digital Literacy | {persona.digital_literacy} |
+| Primary Device | {persona.primary_device} |
+| Reading Speed | {persona.reading_speed} |
+| Tolerance for Friction | {persona.tolerance_for_friction} |
+| Prior Experience | {persona.prior_experience or 'N/A'} |
+| Common Friction Types | {friction_types} |
+
+**Scoring guidance**: Adjust your scores to reflect this persona's perspective. A user with low digital literacy or low tolerance for friction should receive lower scores for the same UI compared to an expert user.
+"""
+
     # Append context data
     context_section = f"""
 
 ## CURRENT TASK CONTEXT
 **Overall Task**: {task_description}
 **Current Step**: {action_index + 1} of {total_actions}
-
+{persona_section}
 ## ACTION DETAILS
 - **Action Type**: {action_type}
 - **Action Description**: {action_desc}

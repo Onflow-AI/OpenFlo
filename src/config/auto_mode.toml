@@ -6,7 +6,7 @@ default_website = "https://www.google.com/" # Default website to start the task.
 
 # Global model configuration
 [model]
-name = "openrouter/google/gemini-3-flash-preview" # Model name to use for inference (including SUS synthesis)
+name = "openrouter/qwen/qwen3-vl-8b-instruct" # Model name to use for inference (including SUS synthesis)
 temperature = 1.0 # Temperature setting for model responses, controlling randomness
 
 # Lightweight model for checklist operations (runs in background, non-blocking)
@@ -15,7 +15,7 @@ checklist_model = "openrouter/qwen/qwen3-vl-8b-instruct" # Lightweight vision-la
 
 # Reasoning model for task planning (runs once at task start)
 # Use GPT-5.1 with online search via OpenRouter
-reasoning_model = "openrouter/anthropic/claude-sonnet-4.5"
+reasoning_model = "openrouter/qwen/qwen3-235b-a22b"
 reasoning_temperature = 1.0 # Temperature for reasoning model
 reasoning_enable_thinking_mode = true # Enable advanced reasoning capabilities
 reasoning_enable_online = true
@@ -59,7 +59,7 @@ viewport.height = 1400 # Browser window height.
 [ux]
 enable_synthesis = true
 generate_report = true  # Enable UX report generation
-ux_model = "openrouter/google/gemini-3-flash-preview"  # Use Gemini 2.5 Flash for multi-metric SEQ evaluation
+ux_model = "openrouter/qwen/qwen3-vl-8b-instruct"  # Lightweight VL model for multi-metric SEQ evaluation
 seq_screenshot_context = true  # Include screenshots in evaluation
 
 # openai/gpt-4o-mini

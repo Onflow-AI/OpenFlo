@@ -591,14 +591,21 @@ async def main():
         description="Run OpenFlo web automation tasks using the OpenFloAgent package"
     )
     parser.add_argument(
-        "-c", "--config_path", 
-        help="Path to the TOML configuration file.", 
-        type=str, 
+        "-c", "--config_path",
+        help="Path to the TOML configuration file.",
+        type=str,
         metavar='config',
         default="config/demo_mode.toml"
     )
+    parser.add_argument(
+        "-p", "--persona",
+        help="Path to a persona TOML file (adds [persona] section to config).",
+        type=str,
+        metavar='persona',
+        default=None,
+    )
 
-    
+
     args = parser.parse_args()
     
     # Setup logging
@@ -620,6 +627,26 @@ async def main():
     except toml.TomlDecodeError:
         print(f"Error: File '{config_path}' is not a valid TOML file.")
         sys.exit(1)
+
+    # Merge persona file if provided
+    if args.persona:
+        persona_path = args.persona
+        if not os.path.isabs(persona_path):
+            persona_path = os.path.join(script_dir, persona_path)
+        try:
+            with open(persona_path, 'r') as persona_file:
+                persona_config = toml.load(persona_file)
+            if 'persona' not in persona_config:
+                print(f"Warning: Persona file '{persona_path}' has no [persona] section, ignoring.")
+            else:
+                config['persona'] = persona_config['persona']
+                print(f"Persona Loaded - {persona_config['persona'].get('display_name', persona_path)}")
+        except FileNotFoundError:
+            print(f"Error: Persona file '{persona_path}' not found.")
+            sys.exit(1)
+        except toml.TomlDecodeError:
+            print(f"Error: Persona file '{persona_path}' is not a valid TOML file.")
+            sys.exit(1)
     
     # Validate API key configuration (OpenRouter/Gemini only)
     api_keys_config = config.get('api_keys', {})

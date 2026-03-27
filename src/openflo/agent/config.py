@@ -94,6 +94,7 @@ def load_agent_config(
             "seq_screenshot_context": ux_config.get(
                 "seq_screenshot_context", seq_screenshot_context
             ),
+            "persona": config.get("persona"),  # Optional [persona] TOML section
         }
 
         return config

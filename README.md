@@ -18,8 +18,11 @@ OpenFlo enables autonomous web agents to perform tasks on any website using visi
     - [`evaluation.py`](src/openflo/agent/evaluation.py): task success evaluation and termination logic
     - [`executor.py`](src/openflo/agent/executor.py): action execution logic
     - [`predictor.py`](src/openflo/agent/predictor.py): LLM interaction and action prediction
+  - [`managers/ux_synthesis.py`](src/openflo/managers/ux_synthesis.py): SEQ-to-SUS evaluation orchestration
+  - [`ux/`](src/openflo/ux/): UX scoring components (SEQ scorer, SUS calculator, report generator)
+  - [`personas/profile.py`](src/openflo/personas/profile.py): `PersonaProfile` dataclass for persona-biased evaluation
 - [`src/run_agent.py`](src/run_agent.py): single-process runner (demo + batch)
-- [`src/config/`](src/config/)*.toml: sample configs
+- [`src/config/`](src/config/)*.toml: sample configs (including `persona.toml`)
 - [`data/`](data/): example data and task files
 
 ## Requirements
@@ -66,8 +69,18 @@ cd src
 In your config (`src/config/auto_mode.toml`), set `experiment.task_file_path`, then run:
 
 ```bash
-python run_agent.py -c config/auto_mode.toml
+uv run run_agent.py -c config/auto_mode.toml
 ```
+
+### With a Persona
+
+Pass a persona config with `-p` to bias UX evaluation from a specific user's perspective:
+
+```bash
+uv run run_agent.py -c config/auto_mode.toml -p config/persona.toml
+```
+
+The persona is injected into the final UX report — scores are evaluated as if the described user performed the task. See [`src/config/persona.toml`](src/config/persona.toml) for all available fields and inline documentation.
 
 ## Task JSON Format
 
@@ -103,6 +116,21 @@ Configs are TOML files; see `src/config/auto_mode.toml`.
   - individual keys can be uncommented in the toml to override
 - `[playwright]`
   - `headless`, `viewport`, `tracing`, `save_video`, `locale`, `geolocation`
+- `[ux]` *(optional)*
+  - `enable_synthesis`: enable SEQ/SUS evaluation (default `false`)
+  - `generate_report`: write `sus_report.json` at session end (default `true`)
+  - `ux_model`: model for SEQ scoring — defaults to main model if omitted
+  - `seq_screenshot_context`: include screenshots in step evaluation (default `true`)
+- `[persona]` *(optional — or pass via `-p persona.toml`)*
+  - `id`, `display_name`, `age_range`: identification fields
+  - `digital_literacy`: `"expert"` | `"intermediate"` | `"beginner"` | `"very_low"`
+  - `primary_device`: `"desktop_keyboard"` | `"desktop_mouse"` | `"tablet_touch"` | `"mobile_touch"`
+  - `reading_speed`: `"fast"` | `"normal"` | `"slow"`
+  - `tolerance_for_friction`: `"high"` | `"medium"` | `"low"` | `"very_low"`
+  - `prior_experience`: free text fed to the LLM
+  - `description`: 3–4 sentence narrative the LLM embodies when scoring
+  - `common_friction_types`: list of friction labels surfaced in the report
+  - `[persona.scoring_bias]`: integer offsets applied to metric scores after LLM response (e.g. `seq_modifier = -1`)
 
 ## Outputs
 
@@ -113,13 +141,14 @@ Each task writes to `basic.save_file_dir/<task_id>/`:
 - `config.toml`: resolved config snapshot
 - `all_predictions.json`: recorded LLM I/O for the task
 - `screenshots/`: `screen_<step>.png` and sometimes `screen_<step>_labeled.png`
+- `sus_report.json`: UX evaluation report (SEQ scores, SUS score, friction points, persona context) — written when `ux.enable_synthesis = true`
 
 The runners also write run-level logs to `src/logs/`.
 
 ## Troubleshooting
 
 - Missing API key: fill in `OPENROUTER_API_KEY` in `.env` (copy from `.env.example`)
-- Playwright browser not found: run `python -m playwright install chromium`
+- Playwright browser not found: run `uv run playwright install chromium`
 - Want to watch the browser: set `playwright.headless = false`
 - Config paths look wrong: run from `src/` or pass an absolute `-c` config path
 

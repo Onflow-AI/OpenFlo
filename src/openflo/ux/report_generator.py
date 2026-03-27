@@ -284,6 +284,31 @@ class ReportGenerator:
 
                 lines.append("")
 
+        # Persona Context (if present)
+        persona = sus_report.get("persona")
+        if persona:
+            lines.append("## Persona Context")
+            lines.append("")
+            lines.append(f"**{persona.get('display_name', 'Unknown')}** ({persona.get('age_range', 'N/A')})")
+            lines.append("")
+            lines.append(f"> {persona.get('description', '')}")
+            lines.append("")
+            lines.append("| Attribute | Value |")
+            lines.append("|-----------|-------|")
+            lines.append(f"| Digital Literacy | {persona.get('digital_literacy', 'N/A')} |")
+            lines.append(f"| Primary Device | {persona.get('primary_device', 'N/A')} |")
+            lines.append(f"| Reading Speed | {persona.get('reading_speed', 'N/A')} |")
+            lines.append(f"| Tolerance for Friction | {persona.get('tolerance_for_friction', 'N/A')} |")
+            if persona.get("prior_experience"):
+                lines.append(f"| Prior Experience | {persona.get('prior_experience')} |")
+            if persona.get("common_friction_types"):
+                lines.append(f"| Common Friction Types | {', '.join(persona['common_friction_types'])} |")
+            scoring_bias = persona.get("scoring_bias", {})
+            if scoring_bias:
+                bias_str = ", ".join(f"{k}: {v:+d}" for k, v in scoring_bias.items())
+                lines.append(f"| Scoring Bias | {bias_str} |")
+            lines.append("")
+
         # Footer
         lines.append("---")
         lines.append("")

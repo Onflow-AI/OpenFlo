@@ -1,0 +1,69 @@
+# =============================================================================
+# Persona Configuration for UX Evaluation
+# =============================================================================
+# When a persona is defined here, UX scoring is evaluated from this persona's
+# perspective rather than as a generic neutral observer.
+#
+# To activate: include this file's [persona] section in your main config, or
+# copy the [persona] block below directly into auto_mode.toml.
+#
+# Required fields: id, display_name, digital_literacy, description
+# =============================================================================
+
+[persona]
+
+# Unique identifier for this persona (used in report output)
+id = "example-persona"
+
+# Human-readable name shown in the report header
+display_name = "Alex, 35yo Knowledge Worker"
+
+# Age bracket (free text, used for report context only)
+age_range = "30-40"
+
+# How comfortable the user is with digital interfaces.
+# Options: "expert" | "intermediate" | "beginner" | "very_low"
+digital_literacy = "intermediate"
+
+# The device and input method this persona primarily uses.
+# Options: "desktop_keyboard" | "desktop_mouse" | "tablet_touch" | "mobile_touch"
+primary_device = "desktop_mouse"
+
+# How quickly the user reads on-screen text.
+# Options: "fast" | "normal" | "slow"
+reading_speed = "normal"
+
+# How patient the user is when things don't work smoothly.
+# Options: "high" | "medium" | "low" | "very_low"
+tolerance_for_friction = "medium"
+
+# Free text fed to the LLM describing prior experience with similar systems.
+prior_experience = "Uses SaaS tools daily for work (Notion, Slack, Google Workspace). Comfortable with standard web UI patterns but dislikes multi-step forms."
+
+# 3-4 sentence narrative the LLM embodies when scoring actions.
+# Be specific: describe habits, frustrations, and mental models.
+description = "Alex is a mid-level project manager who relies on web tools throughout the workday. He is confident navigating familiar interfaces but slows down when labels are ambiguous or when workflows deviate from what he expects. He tends to scan pages quickly before clicking, and becomes frustrated if an action takes more than two steps. He has moderate patience for errors if feedback is clear and recovery is easy."
+
+# List of friction types this persona is especially sensitive to.
+# These are surfaced in the report but do not change scores automatically.
+common_friction_types = [
+    "ambiguous_labels",
+    "unexpected_page_transitions",
+    "multi_step_forms",
+    "hidden_controls",
+]
+
+# Numeric post-parse offsets applied to each metric score after LLM response.
+# Values are clamped to keep final scores in valid range (1-7 for SEQ metrics).
+# Leave empty {} to apply no bias.
+#
+# Available keys:
+#   seq_modifier        — overall ease-of-task score
+#   efficiency_modifier — how efficiently the step was completed
+#   clarity_modifier    — how clear the UI element/action was
+#   confidence_modifier — how confident the user would feel after this step
+[persona.scoring_bias]
+# seq_modifier = 0
+# efficiency_modifier = 0
+# clarity_modifier = 0
+# confidence_modifier = 0

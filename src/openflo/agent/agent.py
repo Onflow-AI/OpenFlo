@@ -394,12 +394,26 @@ class OpenFloAgent:
                 else:
                     ux_engine = self.engine
 
+                # Parse persona if provided in config
+                persona = None
+                persona_data = ux_config.get("persona")
+                if persona_data:
+                    try:
+                        from openflo.personas.profile import PersonaProfile
+                        persona = PersonaProfile.from_dict(persona_data)
+                        self.logger.info(
+                            f"Persona loaded: {persona.display_name} ({persona.digital_literacy})"
+                        )
+                    except Exception as e:
+                        self.logger.warning(f"Failed to parse persona config: {e}")
+
                 self.ux_manager = UXSynthesisManager(
                     engine=self.engine,
                     logger=self.logger,
                     ux_engine=ux_engine,
                     include_screenshots=ux_config.get("seq_screenshot_context", True),
                     custom_seq_prompt=ux_config.get("seq_prompt"),
+                    persona=persona,
                 )
                 self.logger.info(
                     "UX Synthesis Manager initialized (SEQ to SUS enabled)"

@@ -41,6 +41,7 @@ class UXSynthesisManager:
         ux_engine=None,
         include_screenshots: bool = True,
         custom_seq_prompt: str = None,
+        persona=None,
     ):
         """
         Initialize UX Synthesis Manager.
@@ -57,6 +58,7 @@ class UXSynthesisManager:
         self.logger = logger or logging.getLogger("UXSynthesisManager")
         self.include_screenshots = include_screenshots
         self.custom_seq_prompt = custom_seq_prompt
+        self.persona = persona
 
         # Initialize components
         self.seq_scorer = SEQScorer(
@@ -221,6 +223,7 @@ class UXSynthesisManager:
                     ],
                 },
                 "generated_at": datetime.now().isoformat(),
+                "persona": self.persona.to_dict() if self.persona else None,
             }
 
             # Save reports

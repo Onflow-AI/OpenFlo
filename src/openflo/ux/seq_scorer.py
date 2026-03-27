@@ -32,6 +32,7 @@ class SEQScorer:
         engine,
         logger: Optional[logging.Logger] = None,
         custom_seq_prompt: str = None,
+        persona=None,
     ):
         """
         Initialize SEQ Scorer.
@@ -40,10 +41,12 @@ class SEQScorer:
             engine: LLM engine for generating evaluations
             logger: Optional logger instance
             custom_seq_prompt: Optional custom SEQ prompt from config
+            persona: Optional PersonaProfile to bias evaluation perspective
         """
         self.engine = engine
         self.logger = logger or logging.getLogger("SEQScorer")
         self.custom_seq_prompt = custom_seq_prompt
+        self.persona = persona
 
     async def evaluate_action(
         self,
@@ -93,6 +96,7 @@ class SEQScorer:
             action_index=action_index,
             total_actions=total_actions,
             custom_prompt=self.custom_seq_prompt,
+            persona=self.persona,
         )
 
         # Call LLM with optional screenshot
@@ -136,15 +140,25 @@ class SEQScorer:
                 "thinking_log": f"Evaluation error: {str(e)}",
             }
 
+        # Apply persona scoring bias if present
+        bias = {}
+        if self.persona and self.persona.scoring_bias:
+            bias = self.persona.scoring_bias
+
+        def _apply_bias(score, key):
+            """Clamp score + bias offset to 1-7 range."""
+            return max(1, min(7, score + bias.get(key, 0)))
+
         # Build complete result with multi-metric structure
         result = {
             "step": action_index + 1,
-            "seq_score": parsed.get("seq_score", 4),
-            "efficiency": parsed.get("efficiency", 4),
+            "action_type": action_data.get("action_type", action_data.get("action", "UNKNOWN")),
+            "seq_score": _apply_bias(parsed.get("seq_score", 4), "seq_modifier"),
+            "efficiency": _apply_bias(parsed.get("efficiency", 4), "efficiency_modifier"),
             "efficiency_assessment": parsed.get("efficiency_assessment", ""),
-            "clarity": parsed.get("clarity", 4),
+            "clarity": _apply_bias(parsed.get("clarity", 4), "clarity_modifier"),
             "clarity_assessment": parsed.get("clarity_assessment", ""),
-            "confidence": parsed.get("confidence", 4),
+            "confidence": _apply_bias(parsed.get("confidence", 4), "confidence_modifier"),
             "confidence_assessment": parsed.get("confidence_assessment", ""),
             "thinking_log": parsed.get("thinking_log", ""),
             "success": action_data.get("success", True),

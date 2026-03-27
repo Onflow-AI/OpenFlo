@@ -62,7 +62,7 @@ class UXSynthesisManager:
 
         # Initialize components
         self.seq_scorer = SEQScorer(
-            self.ux_engine, self.logger, custom_seq_prompt=custom_seq_prompt
+            self.ux_engine, self.logger, custom_seq_prompt=custom_seq_prompt, persona=persona
         )
         self.sus_calculator = SUSCalculator(self.engine, self.logger)
         self.report_generator = ReportGenerator(self.logger)

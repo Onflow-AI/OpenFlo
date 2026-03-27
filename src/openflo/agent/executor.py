@@ -1920,6 +1920,7 @@ async def execute(agent, prediction_dict):
         enhanced_action = {
             "step": agent.time_step,
             "action": pred_action,
+            "action_type": pred_action,
             "action_description": prediction_dict.get("action_description")
             or new_action,
             "action_generation_response": prediction_dict.get("action_generation", ""),
@@ -2010,6 +2011,7 @@ async def execute(agent, prediction_dict):
         enhanced_action = {
             "step": agent.time_step,
             "action": pred_action,
+            "action_type": pred_action,
             "action_description": prediction_dict.get("action_description")
             or new_action,
             "action_generation_response": prediction_dict.get("action_generation", ""),
@@ -2073,6 +2075,8 @@ async def execute(agent, prediction_dict):
         # Create enhanced action record for error case
         enhanced_action = {
             "step": agent.time_step,
+            "action": pred_action,
+            "action_type": pred_action,
             "action_description": new_action,
             "action_generation_response": prediction_dict.get("action_generation", ""),
             "action_grounding_response": prediction_dict.get("action_grounding", ""),

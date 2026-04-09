@@ -1,189 +1,98 @@
-# OpenFlo
+# OpenFlo <img src="onflow-logo.svg" align="right" width="140">
 
-**An open-source web automation framework powered by large multimodal models — with built-in UX evaluation.**
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE) [![arXiv](https://img.shields.io/badge/arXiv-coming%20soon-b31b1b.svg)]() [![PDF](https://img.shields.io/badge/PDF-coming%20soon-red.svg)]()
 
-*Developed under [Nexus Labs](https://github.com/UCL-Nexus-Labs)*
+*Developed under [Nexus Labs](https://github.com/UCL-Nexus-Labs) · University College London*
 
 > Built upon [Avenir-Web](https://github.com/Princeton-AI2-Lab/Avenir-Web) by the Princeton AI² Lab.
 
-OpenFlo is a research-oriented framework for autonomous web agents. Beyond executing tasks in a browser, it evaluates the *quality of the interaction* at every step — scoring usability with established HCI metrics (SEQ and SUS), surfacing friction points, and optionally adopting a configurable user persona to simulate how different users would experience the same workflow.
+**Authors:**
+[Wee Joe Tan](mailto:joe.tan.25@ucl.ac.uk)\*†,
+[Zi Rui Lucas Lim](mailto:zi.lim.25@ucl.ac.uk)\*†,
+[Shashank Durgad](mailto:shashank.durgad.25@ucl.ac.uk)\*†,
+[Karim Obegi](mailto:karim.obegi.25@ucl.ac.uk)\*†,
+[Aiden Yiliu Li](mailto:yiliu.li.23@ucl.ac.uk)\*†‡
+
+<sub>\* Equal contribution &nbsp;† University College London &nbsp;‡ Also affiliated with Princeton AI² Lab</sub>
 
 ---
 
-## How It Works
+## Abstract
 
-At a high level, OpenFlo runs a **predict → execute → evaluate** loop:
-
-1. **Predict** — A vision-language model observes the current browser screenshot (with optional labeled element overlays) and predicts the next action (click, type, scroll, etc.).
-2. **Execute** — The predicted action is dispatched to Playwright, with coordinate mapping, element grounding, and automatic recovery on failure.
-3. **Evaluate** — After each action, a UX scorer rates the step across four dimensions using a multi-metric extension of the Single Ease Question (SEQ). At session end, these step-level scores are synthesized into a System Usability Scale (SUS) report.
-
-A `ChecklistManager` tracks intermediate goals to ensure sub-tasks are not silently skipped. Termination uses LLM-based semantic analysis (not simple string matching) and only fires after a minimum of 25 actions to avoid premature exits.
+OpenFlo is an autonomous web agent framework for systematic measurement of web usability patterns at scale. Extending the Avenir-Web architecture, OpenFlo introduces a multi-metric UX evaluation layer that scores each agent action across four dimensions — **overall ease (SEQ), efficiency, clarity, and confidence** — using the established Single Ease Question (SEQ) methodology extended beyond its original single-item form. Step-level scores are then synthesised into a **System Usability Scale (SUS)** report at session end, following the standard Brooke (1996) scoring formula and Sauro-Lewis curved grading. A configurable **persona framework** injects user archetypes (defined by digital literacy, device, reading speed, and friction tolerance) directly into LLM scoring prompts, enabling comparative usability analysis across demographic profiles without re-running tasks. Together these components form a fully automated pipeline for studying usability patterns across real websites at scale.
 
 ---
 
-## UX Evaluation Design
+## News
 
-OpenFlo's evaluation layer is the primary research contribution on top of Avenir-Web. It implements two established HCI instruments in a fully automated pipeline.
-
-### Single Ease Question (SEQ) — Step-Level Scoring
-
-The [SEQ](https://measuringu.com/seq10/) is a single 7-point item ("How easy was this step?") used widely in usability research for micro-task evaluation. OpenFlo extends it with **three additional dimensions**, scored on the same 1–7 scale after each action:
-
-| Metric | What it measures |
-|---|---|
-| **SEQ** (overall ease) | Perceived difficulty of the action |
-| **Efficiency** | Whether the action was direct and fast |
-| **Clarity** | How understandable the UI element/response was |
-| **Confidence** | How certain the user felt about the action/outcome |
-
-Each dimension also produces a 1–2 sentence qualitative assessment. When a persona is active, scoring bias offsets are applied after the LLM response to simulate persona-specific tolerance levels.
-
-### System Usability Scale (SUS) — Session-Level Scoring
-
-The [SUS](https://www.usability.gov/how-to-and-tools/methods/system-usability-scale.html) is a standardized 10-item questionnaire (Brooke, 1996) that produces a single 0–100 usability score. OpenFlo's `SUSCalculator` maps accumulated step-level SEQ data onto the SUS framework using LLM-driven synthesis:
-
-```
-Final SUS Score = (X + Y) × 2.5
-  X = Σ (score − 1) for positive items  {1, 3, 5, 7, 9}
-  Y = Σ (5 − score) for negative items  {2, 4, 6, 8, 10}
-```
-
-Grades follow the [Sauro-Lewis curved grading scale](https://measuringu.com/sus/) (A+ ≥ 84.1 → F < 51.7). A statistical heuristic fallback is used if the LLM call fails, using volatility detection and learning-curve analysis across the four multi-metric dimensions.
-
-### Friction Point Analysis
-
-Steps where SEQ ≤ 3 are flagged as friction points and classified by severity. The report surfaces:
-- Which actions caused friction
-- The qualitative reasoning behind low scores
-- A breakdown across efficiency, clarity, and confidence dimensions
-- Persona-specific friction labels (e.g. `waiting`, `confusion`, `searching`, `error`, `ambiguity`)
+*(No releases yet — check back soon.)*
 
 ---
 
-## Persona-Based Evaluation
+## Installation
 
-Any UX session can be evaluated through the lens of a specific user persona. When a persona is injected (via `-p persona.toml`), the LLM embodies that user's profile when scoring each action — adjusting judgements based on their:
-
-- **Digital literacy**: `expert` | `intermediate` | `beginner` | `very_low`
-- **Primary device**: `desktop_keyboard` | `desktop_mouse` | `tablet_touch` | `mobile_touch`
-- **Reading speed**: `fast` | `normal` | `slow`
-- **Tolerance for friction**: `high` | `medium` | `low` | `very_low`
-- **Prior experience**: free-text description fed directly into prompts
-- **Description**: 3–4 sentence narrative the LLM embodies during scoring
-- **Scoring bias**: integer offsets applied post-LLM per metric (e.g. `seq_modifier = -1` to simulate a more critical user)
-
-This makes it possible to compare how the same workflow scores for an expert desktop user vs. a low-literacy mobile user — without re-running the task.
-
----
-
-## Repository Layout
-
-```
-OpenFlo/
-├── src/
-│   ├── openflo/
-│   │   ├── agent/
-│   │   │   ├── agent.py          # Central orchestrator: predict → execute → evaluate loop
-│   │   │   ├── config.py         # Config loading and validation (TOML + env)
-│   │   │   ├── executor.py       # Action dispatch (click, type, scroll, drag, …)
-│   │   │   ├── predictor.py      # LLM interaction, action prediction, history compression
-│   │   │   ├── evaluation.py     # Task completion verification and termination logic
-│   │   │   └── reporting.py      # Result serialisation and action summary generation
-│   │   ├── browser/              # Playwright integration and browser state management
-│   │   ├── llm/                  # LLM engine abstraction (via LiteLLM)
-│   │   ├── managers/
-│   │   │   └── ux_synthesis.py   # SEQ-to-SUS orchestration (UXSynthesisManager)
-│   │   ├── ux/
-│   │   │   ├── seq_scorer.py     # Multi-metric SEQ evaluator (SEQ, Efficiency, Clarity, Confidence)
-│   │   │   ├── sus_calculator.py # SUS scoring with Sauro-Lewis grading and heuristic fallback
-│   │   │   └── report_generator.py # Markdown + JSON UX report output
-│   │   ├── personas/
-│   │   │   └── profile.py        # PersonaProfile dataclass
-│   │   ├── prompts/              # Prompt templates and builders
-│   │   └── utils/                # Image processing, reasoning utilities
-│   ├── run_agent.py              # Entry point: single-task demo + batch runner
-│   └── config/
-│       ├── auto_mode.toml        # Primary config (model, playwright, UX, experiment)
-│       └── persona.toml          # Example persona config with inline docs
-├── data/                         # Example task JSON files
-└── .env.example                  # API key template
-```
-
----
-
-## Requirements
-
-- Python `>=3.9`
+Requirements:
+- Python `>=3.9` (3.11 recommended)
 - Playwright-compatible browser (Chromium recommended)
 - An API key for your chosen LLM provider (OpenRouter preferred)
 
-**Key dependencies:**
-
-| Package | Purpose |
-|---|---|
-| `playwright` | Browser automation |
-| `litellm` | Unified LLM provider abstraction |
-| `torch` + `sentence_transformers` | Embedding-based grounding and evaluation |
-| `Pillow` | Screenshot processing |
-| `backoff` | Exponential retry for LLM calls |
-| `python-dotenv` | `.env` key loading |
-| `BeautifulSoup4` / `lxml` | HTML parsing for element extraction |
-
----
-
-## Setup
-
 ```bash
-# Create a conda environment
 conda create -n openflo python=3.11
 conda activate openflo
 
-# Install in editable mode
 pip install -e src
 
-# Install Playwright browser kernels
-playwright install
+playwright install chromium
 ```
 
-Set your API key:
+---
+
+## API Keys
+
+Recommended — set as an environment variable:
+
+```bash
+export OPENROUTER_API_KEY="your-key"
+```
+
+Or copy the template and fill it in:
 
 ```bash
 cp .env.example .env
-# edit .env and fill in OPENROUTER_API_KEY
+# edit .env and set OPENROUTER_API_KEY
 ```
 
 Environment variables take precedence over any `[api_keys]` values in the config TOML.
 
 ---
 
-## Running
+## Quickstart
 
-All scripts are run from `src/` (config paths are relative to `src/`):
+Run all commands from `src/` (config paths are relative to `src/`):
 
 ```bash
 cd src
 ```
 
-### Batch Mode
+### Batch run
 
-Set `experiment.task_file_path` in your config, then:
+Set `experiment.task_file_path` in `src/config/auto_mode.toml`, then:
 
 ```bash
 uv run run_agent.py -c config/auto_mode.toml
 ```
 
-### With a Persona
+### With a persona
 
 ```bash
 uv run run_agent.py -c config/auto_mode.toml -p config/persona.toml
 ```
 
-The persona is injected into SEQ scoring prompts and surfaced in the final `sus_report.json`. See [`src/config/persona.toml`](src/config/persona.toml) for all fields with inline documentation.
+The persona is injected into SEQ scoring prompts and surfaced in the final `sus_report.json`. See [`src/config/persona.toml`](src/config/persona.toml) for all available fields with inline documentation.
 
----
+### Task JSON format
 
-## Task JSON Format
+Batch mode expects a JSON array:
 
 ```json
 [
@@ -197,7 +106,99 @@ The persona is injected into SEQ scoring prompts and surfaced in the final `sus_
 
 ---
 
-## Configuration Reference
+## UX Evaluation
+
+OpenFlo's primary research contribution is an automated UX evaluation pipeline built on top of Avenir-Web's agent execution layer.
+
+### Step-level scoring: extended SEQ
+
+The [Single Ease Question (SEQ)](https://measuringu.com/seq10/) is a validated 7-point micro-usability metric for individual task steps. OpenFlo extends it with three additional dimensions, all scored 1–7 after each agent action:
+
+| Metric | What it captures |
+|---|---|
+| **SEQ** (overall ease) | Perceived difficulty of completing the action |
+| **Efficiency** | Whether the path to the action was direct and fast |
+| **Clarity** | How understandable the UI element or system response was |
+| **Confidence** | How certain the user felt about the action and its outcome |
+
+Each metric also produces a 1–2 sentence qualitative assessment. Low-scoring steps (SEQ ≤ 3) are flagged as friction points and classified by severity.
+
+### Session-level scoring: SUS
+
+At session end, the [System Usability Scale (SUS)](https://measuringu.com/sus/) (Brooke, 1996) is computed from the accumulated step-level data using the standard formula:
+
+```
+Final SUS Score = (X + Y) × 2.5
+  X = Σ (score − 1) for positive items  {1, 3, 5, 7, 9}
+  Y = Σ (5 − score) for negative items  {2, 4, 6, 8, 10}
+```
+
+Grades follow the [Sauro-Lewis curved scale](https://measuringu.com/sus/) (A+ ≥ 84.1 → F < 51.7). A statistical heuristic fallback is used if the LLM is unavailable, using volatility and learning-curve analysis across the four metric dimensions.
+
+To enable UX evaluation, set in your config:
+
+```toml
+[ux]
+enable_synthesis = true
+```
+
+---
+
+## Persona Framework
+
+UX sessions can be evaluated through the lens of a configurable user persona. When a persona is active, the LLM embodies the described user's profile when scoring each step — adjusting judgements based on their characteristics:
+
+| Field | Options |
+|---|---|
+| `digital_literacy` | `"expert"` \| `"intermediate"` \| `"beginner"` \| `"very_low"` |
+| `primary_device` | `"desktop_keyboard"` \| `"desktop_mouse"` \| `"tablet_touch"` \| `"mobile_touch"` |
+| `reading_speed` | `"fast"` \| `"normal"` \| `"slow"` |
+| `tolerance_for_friction` | `"high"` \| `"medium"` \| `"low"` \| `"very_low"` |
+| `prior_experience` | Free text fed directly into scoring prompts |
+| `description` | 3–4 sentence narrative the LLM embodies during scoring |
+| `common_friction_types` | Labels surfaced in the report (e.g. `waiting`, `confusion`, `searching`) |
+| `[persona.scoring_bias]` | Integer offsets applied per metric after LLM response (e.g. `seq_modifier = -1`) |
+
+This makes it possible to compare how the same workflow scores for an expert desktop user vs. a low-literacy mobile user without re-running the task.
+
+---
+
+## Repository Layout
+
+```
+OpenFlo/
+├── src/
+│   ├── openflo/
+│   │   ├── agent/
+│   │   │   ├── agent.py          # Central orchestrator: predict → execute → evaluate loop
+│   │   │   ├── config.py         # Config loading and validation (TOML + env)
+│   │   │   ├── executor.py       # Action dispatch: click, type, scroll, drag, …
+│   │   │   ├── predictor.py      # LLM interaction, action prediction, history compression
+│   │   │   ├── evaluation.py     # Task completion verification and termination logic
+│   │   │   └── reporting.py      # Result serialisation and action summary generation
+│   │   ├── browser/              # Playwright integration and browser state management
+│   │   ├── llm/                  # LLM engine abstraction (via LiteLLM)
+│   │   ├── managers/
+│   │   │   └── ux_synthesis.py   # SEQ-to-SUS orchestration (UXSynthesisManager)
+│   │   ├── ux/
+│   │   │   ├── seq_scorer.py     # Multi-metric SEQ evaluator
+│   │   │   ├── sus_calculator.py # SUS scoring with Sauro-Lewis grading + heuristic fallback
+│   │   │   └── report_generator.py # Markdown and JSON UX report output
+│   │   ├── personas/
+│   │   │   └── profile.py        # PersonaProfile dataclass
+│   │   ├── prompts/              # Prompt templates and builders
+│   │   └── utils/                # Image processing, reasoning utilities
+│   ├── run_agent.py              # Entry point: demo + batch runner
+│   └── config/
+│       ├── auto_mode.toml        # Primary config (model, playwright, UX, experiment)
+│       └── persona.toml          # Example persona config with inline documentation
+├── data/                         # Example task JSON files
+└── .env.example                  # API key template
+```
+
+---
+
+## Configuration
 
 Configs are TOML files. See `src/config/auto_mode.toml` for a fully annotated example.
 
@@ -229,16 +230,7 @@ Configs are TOML files. See `src/config/auto_mode.toml` for a fully annotated ex
 - `seq_screenshot_context` — include screenshots in step evaluation (default `true`)
 
 ### `[persona]`
-All fields are optional; or pass a separate file with `-p persona.toml`.
-- `id`, `display_name`, `age_range`
-- `digital_literacy`: `"expert"` | `"intermediate"` | `"beginner"` | `"very_low"`
-- `primary_device`: `"desktop_keyboard"` | `"desktop_mouse"` | `"tablet_touch"` | `"mobile_touch"`
-- `reading_speed`: `"fast"` | `"normal"` | `"slow"`
-- `tolerance_for_friction`: `"high"` | `"medium"` | `"low"` | `"very_low"`
-- `prior_experience` — free text fed into scoring prompts
-- `description` — 3–4 sentence narrative the LLM embodies
-- `common_friction_types` — friction labels surfaced in the report
-- `[persona.scoring_bias]` — integer offsets per metric (e.g. `seq_modifier = -1`)
+All fields optional; or pass a separate file with `-p persona.toml`. See the `[Persona Framework](#persona-framework)` section for field definitions.
 
 ---
 
@@ -253,7 +245,7 @@ Each task writes to `<save_file_dir>/<task_id>/`:
 | `config.toml` | Resolved config snapshot |
 | `all_predictions.json` | Full LLM I/O trace for the task |
 | `screenshots/` | `screen_<step>.png` and `screen_<step>_labeled.png` |
-| `sus_report.json` | UX evaluation report — SEQ scores per step, SUS score and grade, friction analysis, persona context |
+| `sus_report.json` | UX evaluation: SEQ scores per step, SUS score and grade, friction analysis, persona context |
 
 Run-level logs are written to `src/logs/`.
 
@@ -262,7 +254,7 @@ Run-level logs are written to `src/logs/`.
 ## Troubleshooting
 
 - **Missing API key** — fill in `OPENROUTER_API_KEY` in `.env` (copy from `.env.example`)
-- **Playwright browser not found** — run `uv run playwright install chromium`
+- **Playwright browser not found** — run `playwright install chromium`
 - **Want to watch the browser** — set `playwright.headless = false`
 - **Config paths look wrong** — run from `src/` or pass an absolute path with `-c`
 
@@ -270,18 +262,33 @@ Run-level logs are written to `src/logs/`.
 
 ## References
 
-- Brooke, J. (1996). *SUS: A quick and dirty usability scale.* In P. Jordan, B. Thomas, B. Weerdmeester & I. McClelland (Eds.), Usability evaluation in industry. Taylor & Francis. — foundational SUS paper
-- Sauro, J. & Lewis, J. R. (2011). *Correlations among prototypical usability metrics: evidence for the construct of usability.* CHI '11. — basis for the Sauro-Lewis grading scale used in `sus_calculator.py`
-- McGee, M. (2004). *Master usability scaling: Magnitude estimation and master scaling applied to usability measurement.* CHI '04. — background on magnitude-estimation approaches to usability scoring
+- Brooke, J. (1996). SUS: A quick and dirty usability scale. In P. Jordan et al. (Eds.), *Usability Evaluation in Industry*. Taylor & Francis.
+- Sauro, J. & Lewis, J. R. (2011). Correlations among prototypical usability metrics: evidence for the construct of usability. *CHI '11*, ACM. — basis for the Sauro-Lewis grading scale
 - [measuringu.com/seq10/](https://measuringu.com/seq10/) — SEQ methodology and benchmarks
 - [measuringu.com/sus/](https://measuringu.com/sus/) — SUS grading and percentile lookup
 
 ---
 
-## Attribution
+## Acknowledgement
 
-OpenFlo is built upon [Avenir-Web](https://github.com/Princeton-AI2-Lab/Avenir-Web) by the Princeton AI² Lab. The UX evaluation layer (SEQ multi-metric extension, SUS synthesis, persona framework) is original work developed at UCL Nexus Labs.
+OpenFlo is built upon [Avenir-Web](https://github.com/Princeton-AI2-Lab/Avenir-Web) by the Princeton AI² Lab. We thank the Avenir-Web authors for open-sourcing their framework.
+
+---
+
+## Disclaimer
+
+This repository is provided for research use. Model outputs may be incorrect, incomplete, or unsafe. You are responsible for reviewing agent actions and complying with applicable laws and website terms of service when running web automation.
+
+---
+
+## Contact
+
+Wee Joe Tan — [joe.tan.25@ucl.ac.uk](mailto:joe.tan.25@ucl.ac.uk)
+
+---
 
 ## License
 
-This project maintains the same license as the original Avenir-Web framework (OpenRAIL-S). See the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0 — see the [LICENSE](LICENSE) file for details.
+
+Copyright © 2025 UCL Nexus Labs. All rights reserved.

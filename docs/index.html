@@ -1,173 +1,422 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Beyond Leaderboards — Why Current SRE Benchmarks Fail to Measure What Production Actually Demands</title>
-  <meta name="description" content="A position paper arguing that existing SRE benchmarks measure knowledge about reliability engineering, not execution of it under realistic production conditions.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlowBench — Benchmarking LLM Agent Behavior Against Human Usability Patterns on the Web</title>
+    <meta
+      name="description"
+      content="FlowBench is the first benchmark for measuring behavioral similarity between LLM agents and human users on real-world web usability tasks."
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="topbar" id="top">
+      <a class="brand" href="#top" aria-label="FlowBench home">
+        <img class="brand-logo" src="../onflow-logo.svg" alt="OpenFlo logo" />
+        <span class="brand-text">FlowBench</span>
+      </a>
+      <nav class="nav">
+        <a href="#abstract">Abstract</a>
+        <a href="#benchmark">Benchmark</a>
+        <a href="#method">Method</a>
+        <a href="#metrics">Metrics</a>
+        <a href="#results">Results</a>
+        <a href="#quickstart">Quickstart</a>
+        <a href="#citation">Citation</a>
+      </nav>
+    </header>
 
-  <!-- ── Hero ──────────────────────────────────────── -->
-  <section class="hero">
-    <div class="container">
-      <h1>Beyond Leaderboards: Why Current SRE Benchmarks Fail to Measure What Production Actually Demands</h1>
-      <p class="meta">Joe<span>|</span>April 2026</p>
-      <div class="badge">Position Paper</div>
-    </div>
-  </section>
-
-  <!-- ── The Problem ───────────────────────────────── -->
-  <section>
-    <div class="container">
-      <p class="statement">Every existing benchmark for evaluating language models on SRE tasks measures <em>knowledge about</em> reliability engineering. None measure <em>execution of</em> it under realistic production conditions.</p>
-    </div>
-  </section>
-
-  <!-- ── What Benchmarks Currently Test ────────────── -->
-  <section>
-    <div class="container">
-      <h2>What Benchmarks Currently Test</h2>
-      <p>The landscape of SRE-oriented LLM evaluation is nascent but growing. The most substantive work to date is Rootly AI Labs' <strong>SRE-skills-bench</strong>, which evaluates models on multiple-choice infrastructure questions (Terraform, Kubernetes, IAM policy) across AWS, GCP, and Azure, and on the <strong>GMCQ</strong> task, matching a bug description to the correct pull request diff.</p>
-      <p>But it shares a structural limitation with every benchmark in this space: tasks are <em>static</em>, <em>isolated</em>, and <em>answer-keyed</em>. A model reads a question and selects a response. There is no broken system. There are no cascading effects. There is no cost to a wrong action taken mid-investigation.</p>
-
-      <div class="levels">
-        <div class="level-card inactive">
-          <span class="level-tag">Level 1</span>
-          <h3>Knowledge (MCQ)</h3>
-          <p>Models answer questions about infrastructure concepts. Fast to run, easy to score, but measures recall rather than reasoning under uncertainty.</p>
+    <main class="page">
+      <section class="hero">
+        <div class="hero-mark">
+          <img class="hero-logo" src="../onflow-logo.svg" alt="OpenFlo logo" />
         </div>
-
-        <div class="level-card inactive">
-          <span class="level-tag">Level 2</span>
-          <h3>Static Agentic Tasks</h3>
-          <p>Models are given a broken configuration, log dump, or code diff and must produce a diagnosis or fix. Closer to real work, but the system state is frozen &mdash; the model cannot take actions, observe effects, or course-correct.</p>
+        <p class="eyebrow">UCL Nexus Labs &middot; University College London</p>
+        <h1>FlowBench</h1>
+        <p class="hero-subtitle">
+          Benchmarking LLM agent behavior against human usability patterns on the web.
+        </p>
+        <p class="authors">
+          <a href="https://tanweejoe.com">Wee Joe Tan</a>
+          <span>&middot;</span>
+          <a href="mailto:zi.lim.25@ucl.ac.uk">Zi Rui Lucas Lim</a>
+          <span>&middot;</span>
+          <a href="mailto:shashank.durgad.25@ucl.ac.uk">Shashank Durgad</a>
+          <span>&middot;</span>
+          <a href="mailto:karim.obegi.25@ucl.ac.uk">Karim Obegi</a>
+          <span>&middot;</span>
+          <a href="mailto:yiliu.li.23@ucl.ac.uk">Aiden Yiliu Li</a>
+        </p>
+        <div class="hero-links">
+          <a href="https://github.com/Onflow-AI/OpenFlo">GitHub</a>
+          <a href="#">arXiv (coming soon)</a>
+          <a href="#">PDF (coming soon)</a>
+          <a href="#">License</a>
         </div>
+      </section>
 
-        <div class="level-card highlight">
-          <span class="level-tag">Level 3</span>
-          <h3>Live Environment Simulation</h3>
-          <p>Models operate inside a running, instrumented system. They call real tools, observe real telemetry, and the environment responds to their actions. <strong>This level does not yet exist as a standardised benchmark.</strong></p>
+      <!-- ── Abstract ────────────────────────────────── -->
+      <section class="section" id="abstract">
+        <div class="section-head">
+          <p class="eyebrow">Abstract</p>
+          <h2>Research Overview</h2>
         </div>
-      </div>
-    </div>
-  </section>
+        <div class="text-block">
+          <p>
+            Whether LLM agents can reliably serve as synthetic users in usability
+            studies rests on an assumption that has yet to be systematically
+            tested: that agent behavior meaningfully mirrors how real humans
+            experience websites. We present <strong>FlowBench</strong>, the first
+            benchmark for measuring behavioral similarity between LLM agents and
+            human users on real-world web tasks.
+          </p>
+          <p>
+            FlowBench comprises <strong>10 diverse websites</strong> spanning
+            e-commerce and SaaS domains, each paired with a website-specific task
+            completed by <strong>20 human participants</strong> under structured
+            usability protocols. Similarity is evaluated across three dimensions:
+            <em>System Usability Scale (SUS)</em> scores, step-wise
+            <em>Single Ease Question (SEQ)</em> trajectories, and
+            <em>Think Aloud</em> transcripts assessed via semantic embedding
+            cosine similarity. These are aggregated into a unified
+            <strong>FlowBench score</strong>, where 1.0 indicates perfect
+            behavioral alignment.
+          </p>
+          <p>
+            We instantiate the benchmark using
+            <a href="https://github.com/Onflow-AI/OpenFlo" style="border-bottom: 1px solid rgba(255,255,255,0.28); padding-bottom: 1px;">OpenFlo</a>
+            as the reference agent harness and report preliminary results,
+            establishing a reproducible foundation for evaluating the fidelity of
+            LLM agents as proxies for human usability testers.
+          </p>
+        </div>
+      </section>
 
-  <!-- ── Why Levels 1 & 2 Aren't Enough ──────────── -->
-  <section>
-    <div class="container">
-      <h2>Why Levels 1 and 2 Are Not Enough</h2>
-      <p>Production SRE is fundamentally a <em>sequential decision problem under uncertainty</em>. The failure mode of an AI SRE is not answering a Terraform MCQ incorrectly &mdash; it is misidentifying a root cause under time pressure, applying a fix that masks the symptom while worsening the underlying fault, or failing to recognise when it lacks sufficient signal to act.</p>
-      <p>Three properties of real incidents are structurally absent from current benchmarks:</p>
-
-      <div class="properties">
-        <div class="prop-item">
-          <div class="prop-num">1</div>
-          <div class="prop-body">
-            <h3>Causality Depth</h3>
-            <p>Real distributed failures are multi-hop. A slow database query causes retry storms, which cause thread pool exhaustion, which causes a frontend timeout. Correctly attributing blame requires the model to reason across service boundaries and time, not simply match a symptom to a known pattern.</p>
+      <!-- ── Benchmark Design ────────────────────────── -->
+      <section class="section" id="benchmark">
+        <div class="section-head">
+          <p class="eyebrow">Design</p>
+          <h2>Benchmark</h2>
+        </div>
+        <div class="text-block">
+          <p>
+            Existing benchmarks for web agents&mdash;WebArena, Mind2Web&mdash;evaluate
+            <em>functional task completion</em>. They measure whether an agent achieves a
+            goal, not whether it experiences the interface the way a human would. A
+            system can be functionally correct yet deeply frustrating to human users,
+            and an agent that completes tasks efficiently may still fail to surface the
+            friction points that matter most.
+          </p>
+          <p>
+            FlowBench is distinct in measuring the <em>process</em> of
+            interaction&mdash;how difficulty is distributed across steps, how
+            reasoning is verbalized&mdash;rather than only whether a terminal goal
+            is reached.
+          </p>
+        </div>
+        <div class="comparison-table">
+          <div class="table-row table-header">
+            <div class="table-cell">Feature</div>
+            <div class="table-cell">WebArena</div>
+            <div class="table-cell">UXAgent</div>
+            <div class="table-cell highlight-cell">FlowBench</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell label-cell">Goal</div>
+            <div class="table-cell">Task completion accuracy</div>
+            <div class="table-cell">Automated UX reporting</div>
+            <div class="table-cell highlight-cell">Human-agent similarity</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell label-cell">Human Baseline</div>
+            <div class="table-cell">No</div>
+            <div class="table-cell">No</div>
+            <div class="table-cell highlight-cell">Yes (20 participants)</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell label-cell">Similarity Metric</div>
+            <div class="table-cell">None</div>
+            <div class="table-cell">None</div>
+            <div class="table-cell highlight-cell">SUS + SEQ + Think Aloud</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell label-cell">Perception</div>
+            <div class="table-cell">DOM-based</div>
+            <div class="table-cell">DOM-based</div>
+            <div class="table-cell highlight-cell">Visual (agent-agnostic)</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell label-cell">Persona Matching</div>
+            <div class="table-cell">No</div>
+            <div class="table-cell">No</div>
+            <div class="table-cell highlight-cell">Yes (1-to-1)</div>
           </div>
         </div>
+      </section>
 
-        <div class="prop-item">
-          <div class="prop-num">2</div>
-          <div class="prop-body">
-            <h3>Tool-Mediated Observation</h3>
-            <p>In production, a model does not receive a curated log dump. It must decide <em>which</em> logs to query, <em>which</em> metrics to pull, and <em>in what order</em>. The information-gathering strategy is itself part of the evaluation.</p>
+      <!-- ── Method ──────────────────────────────────── -->
+      <section class="section" id="method">
+        <div class="section-head">
+          <p class="eyebrow">Method</p>
+          <h2>Evaluation Protocol</h2>
+        </div>
+        <div class="simple-list">
+          <article class="simple-item">
+            <span class="index">01</span>
+            <h3>Human Study</h3>
+            <p>
+              20 participants each complete all 10 tasks across 10 benchmark
+              websites. Each session is screen-recorded. Participants follow a
+              concurrent Think Aloud protocol, verbalizing intentions, confusions,
+              and observations. After each step, participants provide a step-wise
+              SEQ rating (1&ndash;7). Upon task completion, they complete the
+              10-item SUS questionnaire.
+            </p>
+          </article>
+          <article class="simple-item">
+            <span class="index">02</span>
+            <h3>Persona Construction</h3>
+            <p>
+              Each participant completes a demographic and technology-use
+              questionnaire, used to construct a structured persona profile
+              capturing digital literacy, browsing habits, and domain familiarity.
+              These profiles initialize matched agent instances for one-to-one
+              comparison.
+            </p>
+          </article>
+          <article class="simple-item">
+            <span class="index">03</span>
+            <h3>Agent Evaluation</h3>
+            <p>
+              For each human participant with persona profile &pi;<sub>i</sub>, a
+              corresponding agent instance is initialized via OpenFlo with a system
+              prompt encoding &pi;<sub>i</sub>. The agent completes the same task on
+              the same website using visual grounding&mdash;not DOM
+              parsing&mdash;producing a step-wise SEQ trace, a post-task SUS score,
+              and a Think Aloud transcript.
+            </p>
+          </article>
+          <article class="simple-item">
+            <span class="index">04</span>
+            <h3>Similarity Scoring</h3>
+            <p>
+              For each matched human-agent pair, similarity is computed across
+              three dimensions and aggregated into a single FlowBench score.
+              Aggregate benchmark performance is reported as the mean across all
+              20 pairs and all 10 websites.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── Metrics ─────────────────────────────────── -->
+      <section class="section" id="metrics">
+        <div class="section-head">
+          <p class="eyebrow">Metrics</p>
+          <h2>Three Dimensions of Similarity</h2>
+        </div>
+        <div class="text-block">
+          <p>
+            FlowBench defines behavioral similarity across three complementary
+            dimensions, aggregated with equal weighting into a single score where
+            <strong>1.0 = perfect alignment</strong>.
+          </p>
+        </div>
+        <div class="simple-list">
+          <article class="simple-item">
+            <span class="index">S<sub>SUS</sub></span>
+            <h3>SUS Similarity</h3>
+            <p>
+              Normalized absolute difference between human and agent SUS scores.
+              Captures whether the agent's overall usability judgment matches the
+              human's. A score of 1.0 indicates identical SUS assessments.
+            </p>
+            <div class="formula">
+              S<sub>SUS</sub>(p<sub>i</sub>, a<sub>i</sub>) = 1 &minus; |SUS<sub>p</sub> &minus; SUS<sub>a</sub>| / 100
+            </div>
+          </article>
+          <article class="simple-item">
+            <span class="index">S<sub>SEQ</sub></span>
+            <h3>SEQ Trajectory Similarity</h3>
+            <p>
+              Pearson correlation between human and agent step-wise SEQ sequences,
+              normalized to [0, 1]. Captures whether the agent experiences friction
+              at the same interaction steps as the human, independent of absolute
+              score magnitude.
+            </p>
+            <div class="formula">
+              S<sub>SEQ</sub>(p<sub>i</sub>, a<sub>i</sub>) = (1 + r(SEQ<sub>p</sub>, SEQ<sub>a</sub>)) / 2
+            </div>
+          </article>
+          <article class="simple-item">
+            <span class="index">S<sub>TA</sub></span>
+            <h3>Think Aloud Similarity</h3>
+            <p>
+              Cosine similarity between human and agent Think Aloud transcript
+              embeddings, computed using a pre-trained sentence embedding model
+              with mean-pooled step-wise representations.
+            </p>
+            <div class="formula">
+              S<sub>TA</sub>(p<sub>i</sub>, a<sub>i</sub>) = cos(e<sub>p</sub>, e<sub>a</sub>)
+            </div>
+          </article>
+        </div>
+        <div class="score-block">
+          <p class="eyebrow">Unified Score</p>
+          <div class="formula large">
+            FlowBench(p<sub>i</sub>, a<sub>i</sub>) = (S<sub>SUS</sub> + S<sub>SEQ</sub> + S<sub>TA</sub>) / 3
           </div>
         </div>
+      </section>
 
-        <div class="prop-item">
-          <div class="prop-num">3</div>
-          <div class="prop-body">
-            <h3>Action Consequence</h3>
-            <p>Restarting a pod, rolling back a deployment, or scaling a service changes the system state. A benchmark that cannot model these effects cannot measure whether a model reasons safely about blast radius &mdash; one of the most critical properties for production autonomy.</p>
+      <!-- ── Preliminary Results ─────────────────────── -->
+      <section class="section" id="results">
+        <div class="section-head">
+          <p class="eyebrow">Preliminary Results</p>
+          <h2>Pilot Evaluation</h2>
+        </div>
+        <div class="text-block">
+          <p>
+            Two websites were selected for a pilot evaluation prior to the full
+            human study: <strong>Discogs</strong> (a music marketplace) and
+            <strong>Recreation.gov</strong> (a government permit platform).
+            These represent contrasting usability profiles&mdash;one with clear
+            information hierarchy, the other with complex interactive widgets.
+          </p>
+        </div>
+        <div class="results-grid">
+          <div class="result-card">
+            <p class="eyebrow">Discogs</p>
+            <div class="result-score good">87.5 <span>SUS</span></div>
+            <div class="result-grade">A+</div>
+            <p class="result-detail">Avg SEQ: 6.0 / 7 &middot; 4 steps</p>
+            <p>
+              The agent completed the task (locating submission guidelines)
+              smoothly. Think Aloud indicated a coherent strategy: the agent
+              correctly reasoned that documentation links would appear in the
+              footer rather than the primary navigation.
+            </p>
+          </div>
+          <div class="result-card">
+            <p class="eyebrow">Recreation.gov</p>
+            <div class="result-score poor">55.0 <span>SUS</span></div>
+            <div class="result-grade">D</div>
+            <p class="result-detail">Avg SEQ: 4.1 / 7 &middot; 14 steps</p>
+            <p>
+              The task exposed a website where visual clarity masks functional
+              defects. Initial navigation succeeded (SEQ = 7), but the system
+              degraded sharply during date selection and group size configuration
+              (SEQ &rarr; 1). The agent captured the precise failure mode:
+              <em>"While the DOM element is clearly visible and correctly
+              identified, the lack of response creates a total block."</em>
+            </p>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- ── The Level 3 Vision ──────────────────────── -->
-  <section>
-    <div class="container">
-      <h2>The Level 3 Vision</h2>
-      <p>A Level 3 SRE benchmark requires four components working together.</p>
-
-      <div class="vision-grid">
-        <div class="vision-card">
-          <div class="icon">&#x1f4e6;</div>
-          <h3>Reproducible Environment</h3>
-          <p>A fixed, containerised distributed system topology &mdash; frontend, API tier, database, message queue, sidecar proxy &mdash; all instrumented with OpenTelemetry traces, Prometheus metrics, and structured logs.</p>
+      <!-- ── Quickstart ──────────────────────────────── -->
+      <section class="section" id="quickstart">
+        <div class="section-head">
+          <p class="eyebrow">Quickstart</p>
+          <h2>Run OpenFlo</h2>
         </div>
-
-        <div class="vision-card">
-          <div class="icon">&#x26a1;</div>
-          <h3>Fault Library</h3>
-          <p>Programmatic fault injection spanning resource exhaustion, network failures, configuration errors, and emergent cascade failures. Each fault is tagged with its ground-truth causal chain.</p>
+        <div class="code-stack">
+          <article class="code-card">
+            <h3>Install</h3>
+            <div class="copy-block">
+              <button class="copy-button" type="button">Copy</button>
+              <pre><code>conda create -n openflo python=3.11
+conda activate openflo
+pip install -e src
+playwright install chromium</code></pre>
+            </div>
+          </article>
+          <article class="code-card">
+            <h3>API Key</h3>
+            <div class="copy-block">
+              <button class="copy-button" type="button">Copy</button>
+              <pre><code>export OPENROUTER_API_KEY="your-key"</code></pre>
+            </div>
+          </article>
+          <article class="code-card">
+            <h3>Batch Run</h3>
+            <div class="copy-block">
+              <button class="copy-button" type="button">Copy</button>
+              <pre><code>cd src
+uv run run_agent.py -c config/auto_mode.toml</code></pre>
+            </div>
+          </article>
+          <article class="code-card">
+            <h3>With Persona</h3>
+            <div class="copy-block">
+              <button class="copy-button" type="button">Copy</button>
+              <pre><code>cd src
+uv run run_agent.py -c config/auto_mode.toml -p config/persona.toml</code></pre>
+            </div>
+          </article>
         </div>
+      </section>
 
-        <div class="vision-card">
-          <div class="icon">&#x1f6e0;&#xfe0f;</div>
-          <h3>Tool Interface</h3>
-          <p>A constrained, auditable tool interface: log queries, metric lookups, kubectl commands, service restarts. Every tool call is logged, creating a full action trace for evaluation.</p>
+      <!-- ── Citation ────────────────────────────────── -->
+      <section class="section citation-section" id="citation">
+        <div class="section-head">
+          <p class="eyebrow">Citation</p>
+          <h2>BibTeX</h2>
         </div>
-
-        <div class="vision-card">
-          <div class="icon">&#x1f4ca;</div>
-          <h3>Evaluation Function</h3>
-          <p>Multidimensional scoring across outcome, RCA accuracy, step efficiency, safety, and epistemic calibration.</p>
+        <div class="citation-block">
+          <div class="copy-block">
+            <button class="copy-button" type="button">Copy</button>
+            <pre><code>@misc{tan2026flowbench,
+  title={FlowBench: Benchmarking LLM Agent Behavior Against Human Usability Patterns on the Web},
+  author={Wee Joe Tan and Zi Rui Lucas Lim and Shashank Durgad and Karim Obegi and Aiden Yiliu Li},
+  year={2026},
+  url={https://onflow-ai.github.io/OpenFlo/},
+}</code></pre>
+          </div>
         </div>
-      </div>
+      </section>
+    </main>
 
-      <h3 style="margin-top: 32px;">Scoring Dimensions</h3>
-      <ul class="metrics">
-        <li><strong>Outcome</strong> &mdash; Did the system return to a healthy state within N turns?</li>
-        <li><strong>RCA Accuracy</strong> &mdash; Did the model's stated root cause match the injected fault?</li>
-        <li><strong>Step Efficiency</strong> &mdash; How many tool calls were required?</li>
-        <li><strong>Safety</strong> &mdash; Did the model take any actions that worsened system state?</li>
-        <li><strong>Epistemic Calibration</strong> &mdash; Did the model correctly identify when it lacked sufficient signal, or did it act on incomplete information?</li>
-      </ul>
-      <p style="margin-top: 16px; font-size: 0.95rem; color: var(--gray-600);">The last metric is arguably the most important for production deployment. A model that confidently misdiagnoses is more dangerous than one that says "I need more data."</p>
-    </div>
-  </section>
+    <footer class="footer">
+      <a href="https://tanweejoe.com">tanweejoe.com</a>
+      <span>&middot;</span>
+      <a href="https://github.com/Onflow-AI/OpenFlo">GitHub</a>
+      <span>&middot;</span>
+      <a href="https://github.com/Onflow-AI">Onflow AI</a>
+      <span>&middot;</span>
+      <a href="https://github.com/UCL-Nexus-Labs">UCL Nexus Labs</a>
+    </footer>
 
-  <!-- ── Open Research Questions ──────────────────── -->
-  <section>
-    <div class="container">
-      <h2>Open Research Questions</h2>
-      <p>A well-designed Level 3 benchmark opens empirical questions that have no current answers:</p>
-      <ul class="questions">
-        <li>Does chain-of-thought reasoning improve SRE performance more than it improves coding performance?</li>
-        <li>Do models degrade gracefully as causal chain length increases from one hop to five?</li>
-        <li>Can models transfer reasoning from one cloud provider's failure vocabulary to another's?</li>
-      </ul>
-      <p style="margin-top: 16px;">These questions have direct product implications for any team building AI agents on production infrastructure.</p>
-    </div>
-  </section>
+    <script>
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
 
-  <!-- ── Call to Action ──────────────────────────── -->
-  <section style="border-top: none;">
-    <div class="container">
-      <div class="cta">
-        <h2>A Call to Action</h2>
-        <p>SWE-bench succeeded because it had a clear evaluation contract, a reproducible harness, and open data. The same is achievable for SRE &mdash; but it requires treating incident response as an <em>environment problem</em>, not a <em>question-answering problem</em>.</p>
-        <p>The benchmark that does this first will set the standard for how the industry evaluates AI reliability agents for the next several years.</p>
-        <a href="mailto:joe.tan.25@ucl.ac.uk" class="btn">Get in Touch</a>
-      </div>
-    </div>
-  </section>
+      window.addEventListener("load", () => {
+        window.scrollTo(0, 0);
+      });
 
-  <!-- ── Footer ──────────────────────────────────── -->
-  <footer>
-    <div class="container">
-      <p>Position paper by Joe &middot; <a href="https://github.com/Onflow-AI/OpenFlo">OpenFlo on GitHub</a> &middot; <a href="https://github.com/Onflow-AI">Onflow AI</a> &middot; <a href="https://tanweejoe.com">tanweejoe.com</a></p>
-    </div>
-  </footer>
-
-</body>
+      const copyButtons = document.querySelectorAll(".copy-button");
+      copyButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+          const code = button.parentElement.querySelector("code");
+          if (!code) return;
+          try {
+            await navigator.clipboard.writeText(code.textContent);
+            const previous = button.textContent;
+            button.textContent = "Copied";
+            window.setTimeout(() => {
+              button.textContent = previous;
+            }, 1200);
+          } catch {
+            button.textContent = "Failed";
+            window.setTimeout(() => {
+              button.textContent = "Copy";
+            }, 1200);
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

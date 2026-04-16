@@ -1,4 +1,4 @@
-# This file contains the packages needed for OpenFlo
+# This file contains the packages needed for Avenir-UX
 
 # Core dependencies
 backoff==2.2.1

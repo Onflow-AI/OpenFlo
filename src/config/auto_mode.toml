@@ -6,7 +6,7 @@ default_website = "https://www.google.com/" # Default website to start the task.
 
 # Global model configuration
 [model]
-name = "openrouter/qwen/qwen3-vl-8b-instruct" # Model name to use for inference (including SUS synthesis)
+name = "openrouter/anthropic/claude-sonnet-4.6" # Model name to use for inference (including SUS synthesis)
 temperature = 1.0 # Temperature setting for model responses, controlling randomness
 
 # Lightweight model for checklist operations (runs in background, non-blocking)
@@ -15,7 +15,7 @@ checklist_model = "openrouter/qwen/qwen3-vl-8b-instruct" # Lightweight vision-la
 
 # Reasoning model for task planning (runs once at task start)
 # Use GPT-5.1 with online search via OpenRouter
-reasoning_model = "openrouter/qwen/qwen3-235b-a22b"
+reasoning_model = "openrouter/anthropic/claude-sonnet-4.6"
 reasoning_temperature = 1.0 # Temperature for reasoning model
 reasoning_enable_thinking_mode = true # Enable advanced reasoning capabilities
 reasoning_enable_online = true

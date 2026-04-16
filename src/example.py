@@ -1,6 +1,6 @@
 import asyncio
 import os
-from openflo.agent.agent import OpenFloAgent
+from avenir_ux.agent.agent import AvenirUXAgent
 
 # Setup your API Key here, or pass through environment
 # os.environ["OPENAI_API_KEY"] = "Your API KEY Here"
@@ -9,7 +9,7 @@ from openflo.agent.agent import OpenFloAgent
 async def run_agent():
     agent = None
     try:
-        agent = OpenFloAgent(model="gpt-5", task_id="example_task")
+        agent = AvenirUXAgent(model="gpt-5", task_id="example_task")
         await agent.start()
         while not agent.complete_flag:
             prediction_dict = await agent.predict()

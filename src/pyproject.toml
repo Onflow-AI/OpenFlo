@@ -6,9 +6,9 @@ build-backend = "setuptools.build_meta"
 include-package-data = true
 
 [project]
-name = "openflo"
+name = "avenir-ux"
 version = "0.2.9.0"
-description = "OpenFlo is an open-source web automation framework powered by large multimodal models."
+description = "Avenir-UX is an open-source web automation framework powered by large multimodal models."
 authors = [
 {name = "UCL Nexus Labs"}
 ]

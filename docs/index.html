@@ -13,7 +13,7 @@
   <body>
     <header class="topbar" id="top">
       <a class="brand" href="#top" aria-label="FlowBench home">
-        <img class="brand-logo" src="./onflow-logo.svg" alt="OpenFlo logo" />
+        <img class="brand-logo" src="./onflow-logo.svg" alt="Avenir-UX logo" />
         <span class="brand-text">FlowBench</span>
       </a>
       <nav class="nav">
@@ -30,7 +30,7 @@
     <main class="page">
       <section class="hero">
         <div class="hero-mark">
-          <img class="hero-logo" src="./onflow-logo.svg" alt="OpenFlo logo" />
+          <img class="hero-logo" src="./onflow-logo.svg" alt="Avenir-UX logo" />
         </div>
         <p class="eyebrow">UCL Nexus Labs &middot; University College London</p>
         <h1>FlowBench</h1>
@@ -49,7 +49,7 @@
           <a href="https://yiliu.li">Aiden Yiliu Li</a>
         </p>
         <div class="hero-links">
-          <a href="https://github.com/Onflow-AI/OpenFlo">GitHub</a>
+          <a href="https://github.com/Onflow-AI/avenir-ux">GitHub</a>
           <a href="#">arXiv (coming soon)</a>
           <a href="#">PDF (coming soon)</a>
           <a href="#">License</a>
@@ -85,7 +85,7 @@
           </p>
           <p>
             We instantiate the benchmark using
-            <a href="https://github.com/Onflow-AI/OpenFlo" style="border-bottom: 1px solid rgba(255,255,255,0.28); padding-bottom: 1px;">OpenFlo</a>
+            <a href="https://github.com/Onflow-AI/avenir-ux" style="border-bottom: 1px solid rgba(255,255,255,0.28); padding-bottom: 1px;">Avenir-UX</a>
             as the reference agent harness and report preliminary results,
             establishing a reproducible foundation for evaluating the fidelity of
             LLM agents as proxies for human usability testers.
@@ -190,7 +190,7 @@
             <h3>Agent Evaluation</h3>
             <p>
               For each human participant with persona profile &pi;<sub>i</sub>, a
-              corresponding agent instance is initialized via OpenFlo with a system
+              corresponding agent instance is initialized via Avenir-UX with a system
               prompt encoding &pi;<sub>i</sub>. The agent completes the same task on
               the same website using visual grounding&mdash;not DOM
               parsing&mdash;producing a step-wise SEQ trace, a post-task SUS score,
@@ -319,15 +319,15 @@
       <section class="section" id="quickstart">
         <div class="section-head">
           <p class="eyebrow">Quickstart</p>
-          <h2>Run OpenFlo</h2>
+          <h2>Run Avenir-UX</h2>
         </div>
         <div class="code-stack">
           <article class="code-card">
             <h3>Install</h3>
             <div class="copy-block">
               <button class="copy-button" type="button">Copy</button>
-              <pre><code>conda create -n openflo python=3.11
-conda activate openflo
+              <pre><code>conda create -n avenir-ux python=3.11
+conda activate avenir-ux
 pip install -e src
 playwright install chromium</code></pre>
             </div>
@@ -371,7 +371,7 @@ uv run run_agent.py -c config/auto_mode.toml -p config/persona.toml</code></pre>
   title={FlowBench: Benchmarking LLM Agent Behavior Against Human Usability Patterns on the Web},
   author={Wee Joe Tan and Zi Rui Lucas Lim and Shashank Durgad and Karim Obegi and Aiden Yiliu Li},
   year={2026},
-  url={https://onflow-ai.github.io/OpenFlo/},
+  url={https://onflow-ai.github.io/avenir-ux/},
 }</code></pre>
           </div>
         </div>
@@ -381,7 +381,7 @@ uv run run_agent.py -c config/auto_mode.toml -p config/persona.toml</code></pre>
     <footer class="footer">
       <a href="https://tanweejoe.com">tanweejoe.com</a>
       <span>&middot;</span>
-      <a href="https://github.com/Onflow-AI/OpenFlo">GitHub</a>
+      <a href="https://github.com/Onflow-AI/avenir-ux">GitHub</a>
       <span>&middot;</span>
       <a href="https://github.com/Onflow-AI">Onflow AI</a>
       <span>&middot;</span>

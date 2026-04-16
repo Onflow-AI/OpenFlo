@@ -1,4 +1,4 @@
-# OpenFlo <img src="onflow-logo.svg" align="right" width="140">
+# Avenir-UX <img src="onflow-logo.svg" align="right" width="140">
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE) [![arXiv](https://img.shields.io/badge/arXiv-coming%20soon-b31b1b.svg)]() [![PDF](https://img.shields.io/badge/PDF-coming%20soon-red.svg)]()
 
@@ -17,7 +17,7 @@
 
 ## Abstract
 
-OpenFlo is an autonomous web agent framework for systematic measurement of web usability patterns at scale. Extending the Avenir-Web architecture, OpenFlo introduces a multi-metric UX evaluation layer that scores each agent action across four dimensions — **overall ease (SEQ), efficiency, clarity, and confidence** — using the established Single Ease Question (SEQ) methodology extended beyond its original single-item form. Step-level scores are then synthesised into a **System Usability Scale (SUS)** report at session end, following the standard Brooke (1996) scoring formula and Sauro-Lewis curved grading. A configurable **persona framework** injects user archetypes (defined by digital literacy, device, reading speed, and friction tolerance) directly into LLM scoring prompts, enabling comparative usability analysis across demographic profiles without re-running tasks. Together these components form a fully automated pipeline for studying usability patterns across real websites at scale.
+Avenir-UX is an autonomous web agent framework for systematic measurement of web usability patterns at scale. Extending the Avenir-Web architecture, Avenir-UX introduces a multi-metric UX evaluation layer that scores each agent action across four dimensions — **overall ease (SEQ), efficiency, clarity, and confidence** — using the established Single Ease Question (SEQ) methodology extended beyond its original single-item form. Step-level scores are then synthesised into a **System Usability Scale (SUS)** report at session end, following the standard Brooke (1996) scoring formula and Sauro-Lewis curved grading. A configurable **persona framework** injects user archetypes (defined by digital literacy, device, reading speed, and friction tolerance) directly into LLM scoring prompts, enabling comparative usability analysis across demographic profiles without re-running tasks. Together these components form a fully automated pipeline for studying usability patterns across real websites at scale.
 
 ---
 
@@ -35,8 +35,8 @@ Requirements:
 - An API key for your chosen LLM provider (OpenRouter preferred)
 
 ```bash
-conda create -n openflo python=3.11
-conda activate openflo
+conda create -n avenir-ux python=3.11
+conda activate avenir-ux
 
 pip install -e src
 
@@ -106,11 +106,11 @@ Batch mode expects a JSON array:
 
 ## UX Evaluation
 
-OpenFlo's primary research contribution is an automated UX evaluation pipeline built on top of Avenir-Web's agent execution layer.
+Avenir-UX's primary research contribution is an automated UX evaluation pipeline built on top of Avenir-Web's agent execution layer.
 
 ### Step-level scoring: extended SEQ
 
-The [Single Ease Question (SEQ)](https://measuringu.com/seq10/) is a validated 7-point micro-usability metric for individual task steps. OpenFlo extends it with three additional dimensions, all scored 1–7 after each agent action:
+The [Single Ease Question (SEQ)](https://measuringu.com/seq10/) is a validated 7-point micro-usability metric for individual task steps. Avenir-UX extends it with three additional dimensions, all scored 1–7 after each agent action:
 
 | Metric | What it captures |
 |---|---|
@@ -164,9 +164,9 @@ This makes it possible to compare how the same workflow scores for an expert des
 ## Repository Layout
 
 ```
-OpenFlo/
+Avenir-UX/
 ├── src/
-│   ├── openflo/
+│   ├── avenir-ux/
 │   │   ├── agent/
 │   │   │   ├── agent.py          # Central orchestrator: predict → execute → evaluate loop
 │   │   │   ├── config.py         # Config loading and validation (TOML + env)
@@ -269,7 +269,7 @@ Run-level logs are written to `src/logs/`.
 
 ## Acknowledgement
 
-OpenFlo is built upon [Avenir-Web](https://github.com/Princeton-AI2-Lab/Avenir-Web) by the Princeton AI² Lab. We thank the Avenir-Web authors for open-sourcing their framework.
+Avenir-UX is built upon [Avenir-Web](https://github.com/Princeton-AI2-Lab/Avenir-Web) by the Princeton AI² Lab. We thank the Avenir-Web authors for open-sourcing their framework.
 
 ---
 

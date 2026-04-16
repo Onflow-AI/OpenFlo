@@ -1,6 +1,6 @@
 # Avenir-UX <img src="onflow-logo.svg" align="right" width="140">
 
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE) [![arXiv](https://img.shields.io/badge/arXiv-coming%20soon-b31b1b.svg)]() [![PDF](https://img.shields.io/badge/PDF-coming%20soon-red.svg)]()
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE) [![arXiv](https://img.shields.io/badge/arXiv-2604.09581-b31b1b.svg)](https://arxiv.org/abs/2604.09581) [![PDF](https://img.shields.io/badge/PDF-download-red.svg)](https://arxiv.org/pdf/2604.09581)
 
 *Developed under [Nexus Labs](https://github.com/UCL-Nexus-Labs) · University College London*
 
